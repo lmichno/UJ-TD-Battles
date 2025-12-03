@@ -12,7 +12,7 @@ float randFloat(float a, float b);
 
 int main()
 {
-    // G³ówne operacje
+   // G³ówne operacje
     sf::RenderWindow window(sf::VideoMode({ 1280, 720 }), "UJ TD 1"); // Utworzenie okna
 
     sf::Clock clock; // Zegar do deltaTime
