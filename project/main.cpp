@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "shooter.hpp"
+#include "button.hpp"
 
 
 
@@ -24,11 +25,18 @@ int main()
     int money = 100;
     int moneyAdd = 15;
 
+
     //Fonty
     sf::Font mediumGothic("ScienceGothic-Medium.ttf");
 
-    //Teksty
     //BOCZNY PANEL--------------------------
+    // Przyciski
+	Button jaguar1Button(12, 115, 100, 125, 15); // x, y, width, height
+    Button jaguar2Button(12, 243, 100, 125, 30);
+    Button jaguar3Button(12, 371, 100, 125, 60);
+    Button jaguar4Button(12, 504, 100, 125, 120);
+    
+    // Teksty
     sf::Text text(mediumGothic);
     text.setCharacterSize(18);
     text.setFillColor(sf::Color::Black);
@@ -98,6 +106,23 @@ int main()
         {
             if (event->is<sf::Event::Closed>()) // Obs³uga zamkniêcia okna
                 window.close();
+
+            // Obs³uga klikniêæ myszy
+            if (const auto* mousePressed = event->getIf<sf::Event::MouseButtonPressed>())
+            {
+                jaguar1Button.onMousePressed();
+                jaguar2Button.onMousePressed();
+                jaguar3Button.onMousePressed();
+                jaguar4Button.onMousePressed();
+            }
+
+            if (const auto* mouseReleased = event->getIf<sf::Event::MouseButtonReleased>())
+            {
+                jaguar1Button.onMouseReleased();
+                jaguar2Button.onMouseReleased();
+                jaguar3Button.onMouseReleased();
+                jaguar4Button.onMouseReleased();
+            }
         }
 
         // Wyliczanie dt (czas miêdzy kolejnymi klatkami)
@@ -107,8 +132,14 @@ int main()
         // Czyszczenie okna
         window.clear(sf::Color::White);
 
-        //Boczne okienko
+        // Pobranie pozycji myszy
+        sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
+        // Update przycisków
+        jaguar1Button.update(mousePos, money);
+        jaguar2Button.update(mousePos, money);
+        jaguar3Button.update(mousePos, money);
+        jaguar4Button.update(mousePos, money);
 
         //Update
         for (Shooter& shooter : shooters) {
@@ -119,13 +150,19 @@ int main()
         window.draw(rectangle);
         window.draw(rect2);
 
-		window.draw(sidePanelSprite);
+        window.draw(sidePanelSprite);
         window.draw(kasa);
         window.draw(zarobki);
         window.draw(jaguar1Cost);
-		window.draw(jaguar2Cost);
-		window.draw(jaguar3Cost);
-		window.draw(jaguar4Cost);
+        window.draw(jaguar2Cost);
+        window.draw(jaguar3Cost);
+        window.draw(jaguar4Cost);
+
+        // Rysowanie przycisków
+        jaguar1Button.draw(window);
+        jaguar2Button.draw(window);
+        jaguar3Button.draw(window);
+        jaguar4Button.draw(window);
 
         for (Shooter& shooter : shooters) {
             shooter.draw(window);
