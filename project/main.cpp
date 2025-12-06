@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "shooter.hpp"
+#include "enemy.hpp"
 #include "button.hpp"
 
 
@@ -22,6 +23,7 @@ int main()
 
     // Zmienne
     std::vector<Shooter> shooters;
+	std::vector<Enemy> enemies;
     int money = 100;
     int moneyAdd = 15;
 
@@ -78,6 +80,7 @@ int main()
 
     // Tekstury
     sf::Texture jaguar1("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
+	sf::Texture ludzik("ludzik.png", false, sf::IntRect({ 0, 0 }, { 32, 32 }));
 	sf::Texture sidePanel("sidePanel.png");
 
     //Sprite
@@ -87,7 +90,8 @@ int main()
     // Operacje wstêpne
     for (int i = 0; i < 10; i++)
     {
-        shooters.emplace_back(jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 688.f)); // generowanie shooterów, 688 aby nie wychodzi³ poza ekran 720-32
+        shooters.emplace_back(jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f)); // generowanie shooterów, 656 aby nie wychodzi³ poza ekran (720-32*2)
+		enemies.emplace_back(ludzik, randFloat(0.f, 656.0f));
     }
 
 
@@ -142,9 +146,12 @@ int main()
         jaguar4Button.update(mousePos, money);
 
         //Update
-        for (Shooter& shooter : shooters) {
+        /*for (Shooter& shooter : shooters) {
             shooter.update(dt);
         }
+        for (Enemy& enemy : enemies) {
+			enemy.update(dt);
+		}*/
 
         // Draw
         window.draw(rectangle);
@@ -165,8 +172,13 @@ int main()
         jaguar4Button.draw(window);
 
         for (Shooter& shooter : shooters) {
+            shooter.update(dt);
             shooter.draw(window);
         }
+        for (Enemy& enemy : enemies) {
+            enemy.update(dt);
+            enemy.draw(window);
+		}
 
         window.display();
     }
