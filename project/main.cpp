@@ -11,6 +11,7 @@
 std::mt19937 rng(std::random_device{}()); // Globalny generator losowy
 
 float randFloat(float a, float b);
+int randInt(int a, int b);
 
 int main()
 {
@@ -91,7 +92,10 @@ int main()
     for (int i = 0; i < 10; i++)
     {
         shooters.emplace_back(jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f)); // generowanie shooterów, 656 aby nie wychodzi³ poza ekran (720-32*2)
-		enemies.emplace_back(ludzik, randFloat(0.f, 656.0f));
+    }
+    for (int i = 0; i < 10; i++)
+    {
+		enemies.emplace_back(ludzik, randFloat(0.f, 656.0f), shooters[randInt(0, static_cast<int>(shooters.size() - 1))].getPosition()); // Jako target podajemy losowego shootera
     }
 
 
@@ -187,6 +191,11 @@ int main()
 float randFloat(float a, float b) {
     std::uniform_real_distribution<float> dist(a, b);
 
+    return dist(rng);
+}
+
+int randInt(int a, int b) {
+    std::uniform_int_distribution<> dist(a, b);
     return dist(rng);
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 
 class Enemy
@@ -24,7 +25,7 @@ private:
 
 public:
     // Konstruktor
-    Enemy(const sf::Texture& texture, float randY)
+    Enemy(const sf::Texture& texture, float randY, sf::Vector2f shooterPos)
         : sprite(texture) // sf::Sprite dla SFML 3.0> nie ma domyœlnego kontruktora, wiêc musimy upewniæ siê, ¿e sprite dostanie teksturê zanim bêdziemy wykonywaæ na nim jakiekolwiek operacje
     {
         sprite.setPosition({ 1280, randY });
@@ -37,12 +38,12 @@ public:
 
         health = 1.0f;
         demage = 1.0f;
-        range = 1.0f;
+        range = 400.0f;
         accuracy = 1.0f;
         speed = 1.0f;
 		walkingSpeed = 50.0f;
 
-        target = { 10,10 };
+        target = shooterPos;
     }
 
     // Funkcje
@@ -50,7 +51,10 @@ public:
     // Renderowanie
     void update(float dt) {
 
-        sprite.move({ -(walkingSpeed*dt), 0 });
+        if (sprite.getPosition().x - target.x > range)
+        {
+            sprite.move({ -(walkingSpeed*dt), 0 });
+        }
 
         //WYMAGA AKTUALIZACJI SPRITE
         //timeSinceLastFrame += dt;
