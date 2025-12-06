@@ -1,19 +1,21 @@
 #include <SFML/Graphics.hpp>
 #include <random>
 #include <iostream>
+#include <memory>
+#include <algorithm>
 
 #include "shooter.hpp"
+#include "enemy.hpp"
 #include "button.hpp"
-
-
 
 std::mt19937 rng(std::random_device{}()); // Globalny generator losowy
 
 float randFloat(float a, float b);
+int randInt(int a, int b);
 
 int main()
 {
-    // G≥Ûwne operacje
+    // G≈Ç√≥wne operacje
     sf::RenderWindow window(sf::VideoMode({ 1280, 720 }), "UJ TD 1"); // Utworzenie okna
 
     sf::Clock clock; // Zegar do deltaTime
@@ -21,7 +23,9 @@ int main()
     window.setFramerateLimit(60); // Ustawienie 60fps
 
     // Zmienne
-    std::vector<Shooter> shooters;
+    // U≈ºywamy unique_ptr, aby adresy w pamiƒôci by≈Çy sta≈Çe (dla Enemy::target i Shooter::enemies)
+    std::vector<std::unique_ptr<Shooter>> shooters;
+    std::vector<std::unique_ptr<Enemy>> enemies; //
     int money = 100;
     int moneyAdd = 15;
 
@@ -31,18 +35,18 @@ int main()
 
     //BOCZNY PANEL--------------------------
     // Przyciski
-	Button jaguar1Button(12, 115, 100, 125, 15); // x, y, width, height
+    Button jaguar1Button(12, 115, 100, 125, 15); // x, y, width, height
     Button jaguar2Button(12, 243, 100, 125, 30);
     Button jaguar3Button(12, 371, 100, 125, 60);
     Button jaguar4Button(12, 504, 100, 125, 120);
-    
+
     // Teksty
     sf::Text text(mediumGothic);
     text.setCharacterSize(18);
     text.setFillColor(sf::Color::Black);
 
     sf::Text kasa = text;
-	std::string moneyStr = std::to_string(money);
+    std::string moneyStr = std::to_string(money);
     kasa.setString(moneyStr);
     kasa.setFillColor(sf::Color::Yellow);
     kasa.setOutlineThickness(1);
@@ -50,7 +54,7 @@ int main()
     kasa.setPosition({ 20, 38 });
 
     sf::Text zarobki = text;
-	std::string  moneyAddStr = std::to_string(moneyAdd) + " $/s";
+    std::string  moneyAddStr = std::to_string(moneyAdd) + " $/s";
     zarobki.setString(moneyAddStr);
     zarobki.setPosition({ 20, 85 });
     zarobki.setFillColor(sf::Color::Green);
@@ -63,31 +67,38 @@ int main()
     jaguar1Cost.setOutlineThickness(0.8f);
 
     sf::Text jaguar2Cost = jaguar1Cost;
-	sf::Text jaguar3Cost = jaguar1Cost;
-	sf::Text jaguar4Cost = jaguar1Cost;
+    sf::Text jaguar3Cost = jaguar1Cost;
+    sf::Text jaguar4Cost = jaguar1Cost;
 
-	jaguar1Cost.setString("15");
-	jaguar1Cost.setPosition({ 15, 150 });
-	jaguar2Cost.setString("30");
-	jaguar2Cost.setPosition({ 15, 280 });
-	jaguar3Cost.setString("60");
-	jaguar3Cost.setPosition({ 15, 410 });
-	jaguar4Cost.setString("120");
-	jaguar4Cost.setPosition({ 15, 540 });
+    jaguar1Cost.setString("15");
+    jaguar1Cost.setPosition({ 15, 150 });
+    jaguar2Cost.setString("30");
+    jaguar2Cost.setPosition({ 15, 280 });
+    jaguar3Cost.setString("60");
+    jaguar3Cost.setPosition({ 15, 410 });
+    jaguar4Cost.setString("120");
+    jaguar4Cost.setPosition({ 15, 540 });
     //BOCZNY PANEL--------------------------
 
     // Tekstury
     sf::Texture jaguar1("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
-	sf::Texture sidePanel("sidePanel.png");
+    sf::Texture ludzik("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
+    sf::Texture sidePanel("sidePanel.png");
 
     //Sprite
-	sf::Sprite sidePanelSprite(sidePanel);
+    sf::Sprite sidePanelSprite(sidePanel);
 
 
-    // Operacje wstÍpne
-    for (int i = 0; i < 10; i++)
+    // Operacje wstƒôpne
+    for (int i = 0; i < 20; i++)
     {
-        shooters.emplace_back(jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 688.f)); // generowanie shooterÛw, 688 aby nie wychodzi≥ poza ekran 720-32
+        shooters.push_back(std::make_unique<Shooter>(jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f))); 
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
+        enemies.push_back(std::make_unique<Enemy>(ludzik, randFloat(0.f, 656.0f), shooters[randomT].get()));
+        shooters[randomT]->addEnemy(enemies.back().get());
     }
 
 
@@ -100,14 +111,14 @@ int main()
     rect2.setPosition({ 126, 0 });
 
 
-    while (window.isOpen()) // G≥Ûwna pÍtla aplikacji
+    while (window.isOpen()) // G≈Ç√≥wna pƒôtla aplikacji
     {
-        while (const std::optional event = window.pollEvent()) // Sprawdzanie eventÛw
+        while (const std::optional event = window.pollEvent()) // Sprawdzanie event√≥w
         {
-            if (event->is<sf::Event::Closed>()) // Obs≥uga zamkniÍcia okna
+            if (event->is<sf::Event::Closed>()) // Obs≈Çuga zamkniƒôcia okna
                 window.close();
 
-            // Obs≥uga klikniÍÊ myszy
+            // Obs≈Çuga klikniƒôƒá myszy
             if (const auto* mousePressed = event->getIf<sf::Event::MouseButtonPressed>())
             {
                 jaguar1Button.onMousePressed();
@@ -125,7 +136,7 @@ int main()
             }
         }
 
-        // Wyliczanie dt (czas miÍdzy kolejnymi klatkami)
+        // Wyliczanie dt (czas miƒôdzy kolejnymi klatkami)
         sf::Time deltaTime = clock.restart();
         float dt = deltaTime.asSeconds();
 
@@ -135,15 +146,35 @@ int main()
         // Pobranie pozycji myszy
         sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
-        // Update przyciskÛw
+        // Update przycisk√≥w
         jaguar1Button.update(mousePos, money);
         jaguar2Button.update(mousePos, money);
         jaguar3Button.update(mousePos, money);
         jaguar4Button.update(mousePos, money);
 
-        //Update
-        for (Shooter& shooter : shooters) {
-            shooter.update(dt);
+        // Update Shooter√≥w
+        for (auto& shooter : shooters) {
+            shooter->update(dt);
+        }
+        
+        // Usuwanie martwych shooter√≥w
+        auto it = std::remove_if(shooters.begin(), shooters.end(), [](const auto& s) {
+            return s->getHealth() <= 0;
+        });
+        shooters.erase(it, shooters.end());
+
+        // Update Enemies
+        for (auto& enemy : enemies) { // Iteracja po unique_ptr
+			if (shooters.empty()) enemy->setTarget(nullptr);
+            if (enemy->getTarget() == nullptr) {
+                // Je≈õli nie ma celu, skip
+                if (!shooters.empty()) {
+                    int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
+                    enemy->setTarget(shooters[randomT].get());
+                    shooters[randomT]->addEnemy(enemy.get()); // Przekazujemy wska≈∫nik
+                }
+            }
+            enemy->update(dt);
         }
 
         // Draw
@@ -158,14 +189,20 @@ int main()
         window.draw(jaguar3Cost);
         window.draw(jaguar4Cost);
 
-        // Rysowanie przyciskÛw
+        // Rysowanie przycisk√≥w
         jaguar1Button.draw(window);
         jaguar2Button.draw(window);
         jaguar3Button.draw(window);
         jaguar4Button.draw(window);
 
-        for (Shooter& shooter : shooters) {
-            shooter.draw(window);
+        // Rysowanie shooter√≥w
+        for (const auto& shooter : shooters) {
+            shooter->draw(window);
+        }
+        
+        // Rysowanie enemies
+        for (const auto& enemy : enemies) {
+            enemy->draw(window);
         }
 
         window.display();
@@ -178,4 +215,7 @@ float randFloat(float a, float b) {
     return dist(rng);
 }
 
-
+int randInt(int a, int b) {
+    std::uniform_int_distribution<> dist(a, b);
+    return dist(rng);
+}

@@ -133,11 +133,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="enemy.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="shooter.cpp" />
     <ClCompile Include="shooter.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="button.hpp" />
+    <ClInclude Include="enemy.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

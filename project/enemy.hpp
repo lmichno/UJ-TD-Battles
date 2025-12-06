@@ -1,10 +1,10 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "enemy.hpp"
 
+class Shooter;
 
-class Shooter
+class Enemy
 {
 private:
     sf::Sprite sprite;
@@ -19,18 +19,17 @@ private:
     float range;
     float accuracy;
     float speed;
+    float walkingSpeed;
 
-    sf::Vector2f target;
-    std::vector<Enemy*> enemies;
+    Shooter* target = nullptr;
+	sf::Vector2f targetPos;
 
 
 public:
     // Konstruktor
-    Shooter(const sf::Texture& texture, float randX, float randY);
+    Enemy(const sf::Texture& texture, float randY, Shooter* shooter);
 
     // Funkcje
-
-    void notifyEnemies();
 
     // Renderowanie
     void update(float dt);
@@ -38,11 +37,9 @@ public:
     void draw(sf::RenderWindow& window);
 
     // Settery
-    void setTarget(sf::Vector2f newTarget);
-    void addEnemy(Enemy* enemy);
-	void takeDamage(float dmg);
+    void setTarget(Shooter* newTarget);
 
     // Gettery
     sf::Vector2f getPosition();
-	float getHealth();
+	Shooter* getTarget();
 };
