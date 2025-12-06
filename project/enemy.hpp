@@ -41,4 +41,5 @@ public:
 
     // Gettery
     sf::Vector2f getPosition();
+	Shooter* getTarget();
 };

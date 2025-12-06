@@ -30,6 +30,8 @@ public:
 
     // Funkcje
 
+    void notifyEnemies();
+
     // Renderowanie
     void update(float dt);
 
@@ -38,7 +40,9 @@ public:
     // Settery
     void setTarget(sf::Vector2f newTarget);
     void addEnemy(Enemy* enemy);
+	void takeDamage(float dmg);
 
     // Gettery
     sf::Vector2f getPosition();
+	float getHealth();
 };

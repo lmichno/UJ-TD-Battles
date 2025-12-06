@@ -4,13 +4,13 @@
 
 // Konstruktor
 Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter)
-    : sprite(texture) // sf::Sprite dla SFML 3.0> nie ma domyœlnego kontruktora, wiêc musimy upewniæ siê, ¿e sprite dostanie teksturê zanim bêdziemy wykonywaæ na nim jakiekolwiek operacje
+    : sprite(texture) // sf::Sprite dla SFML 3.0> nie ma domyÅ›lnego kontruktora, wiÄ™c musimy upewniÄ‡ siÄ™, ï¿½e sprite dostanie teksturÄ™ zanim bÄ™dziemy wykonywaÄ‡ na nim jakiekolwiek operacje
 {
     sprite.setPosition({ 1280, randY });
     sprite.setScale({ -2, 2 });
 
     timeSinceLastFrame = 0.0f;
-    frameDuration = 0.2f; // D³ugoœæ animacji w sekundach
+    frameDuration = 0.2f; // DÅ‚ugoÅ›Ä‡ animacji w sekundach
     currentFrame = 0;
     totalFrames = 2;
 
@@ -19,16 +19,16 @@ Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter)
     range = 400.0f;
     accuracy = 1.0f;
     speed = 1.0f;
-    walkingSpeed = 50.0f;
+    walkingSpeed = 200.0f;
 
     target = shooter;
-    if (shooter) targetPos = shooter->getPosition();
+    targetPos = shooter->getPosition();
 }
 
 //Funkcje
 void Enemy::update(float dt) {
 
-    if (sprite.getPosition().x - targetPos.x > range)
+    if (sprite.getPosition().x - targetPos.x > range || target == nullptr || targetPos.x < 0)
     {
         sprite.move({ -(walkingSpeed * dt), 0 });
 
@@ -36,9 +36,9 @@ void Enemy::update(float dt) {
 
         if (timeSinceLastFrame >= frameDuration)
         {
-            currentFrame++; // Przejœcie do nastêpnej ramki
+            currentFrame++; // PrzejÅ›cie do nastÄ™pnej ramki
 
-            if (currentFrame >= totalFrames) currentFrame = 0; // Powrót do pierwszej ramki
+            if (currentFrame >= totalFrames) currentFrame = 0; // PowrÃ³t do pierwszej ramki
 
             sprite.setTextureRect(sf::IntRect({ currentFrame * 16, 0 }, { 16, 32 })); // Kolejne klatki
 
@@ -51,16 +51,20 @@ void Enemy::update(float dt) {
             // frame 0 w czasie speed
             timeSinceLastFrame += dt;
 
-            
+
             sprite.setTextureRect(sf::IntRect({ 0, 32 }, { 16, 32 }));
 
             if (timeSinceLastFrame >= speed)
             {
-                // wchodzimy w jednorazow¹ klatkê ataku - frame 1
+                // wchodzimy w jednorazowÄ… klatkÄ™ ataku - frame 1
                 currentFrame = 1;
                 timeSinceLastFrame = 0.0f;
 
                 sprite.setTextureRect(sf::IntRect({ currentFrame * 16, 32 }, { 16, 32 }));
+
+                if (target != nullptr) target->takeDamage(demage);
+				else targetPos = { -10000.0f, -100.0f };
+
             }
         }
         else if (currentFrame == 1)
@@ -94,10 +98,14 @@ void Enemy::draw(sf::RenderWindow& window) {
 //Settery
 void Enemy::setTarget(Shooter* newTarget) {
     target = newTarget;
-    if (newTarget) targetPos = newTarget->getPosition();
+    if (newTarget != nullptr)targetPos = newTarget->getPosition();
+    else targetPos = { -10000.0f, -100.0f };
 }
 
 //Gettery
 sf::Vector2f Enemy::getPosition() {
     return sprite.getPosition();
+}
+Shooter* Enemy::getTarget() {
+    return target;
 }

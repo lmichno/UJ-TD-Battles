@@ -4,17 +4,17 @@
 
 // Konstruktor
 Shooter::Shooter(const sf::Texture& texture, float randX, float randY)
-    : sprite(texture) // sf::Sprite dla SFML 3.0> nie ma domyúlnego kontruktora, wiÍc musimy upewniÊ siÍ, øe sprite dostanie teksturÍ zanim bÍdziemy wykonywaÊ na nim jakiekolwiek operacje
+    : sprite(texture) // sf::Sprite dla SFML 3.0> nie ma domy≈õlnego kontruktora, wiƒôc musimy upewniƒá siƒô, ≈ºe sprite dostanie teksturƒô zanim bƒôdziemy wykonywaƒá na nim jakiekolwiek operacje
 {
     sprite.setPosition({ randX, randY });
     sprite.setScale({ 2, 2 });
 
     timeSinceLastFrame = 0.0f;
-    frameDuration = 0.2f; // D≥ugoúÊ animacji w sekundach
+    frameDuration = 0.2f; // D≈Çugo≈õƒá animacji w sekundach
     currentFrame = 0;
     totalFrames = 2;
 
-    health = 1.0f;
+    health = 3.0f;
     demage = 1.0f;
     range = 1.0f;
     accuracy = 1.0f;
@@ -25,15 +25,23 @@ Shooter::Shooter(const sf::Texture& texture, float randX, float randY)
 
 // Funkcje
 
+void Shooter::notifyEnemies() {
+    for (Enemy* enemy : enemies) {
+        if (enemy) enemy->setTarget(nullptr); // Ustawienie celu na nullptr gdy shooter jest martwy
+    }
+
+enemies.clear(); // Wyczyszczenie listy wrog√≥w
+}
+
 // Renderowanie
 void Shooter::update(float dt) {
     timeSinceLastFrame += dt;
 
     if (timeSinceLastFrame >= frameDuration)
     {
-        currentFrame++; // Przejúcie do nastÍpnej ramki
+        currentFrame++; // Przej≈õcie do nastƒôpnej ramki
 
-        if (currentFrame >= totalFrames) currentFrame = 0; // PowrÛt do pierwszej ramki
+        if (currentFrame >= totalFrames) currentFrame = 0; // Powr√≥t do pierwszej ramki
 
         sprite.setTextureRect(sf::IntRect({ currentFrame * 16, 0 }, { 16, 32 })); // Kolejne klatki
 
@@ -52,8 +60,24 @@ void Shooter::setTarget(sf::Vector2f newTarget) {
 void Shooter::addEnemy(Enemy* enemy) {
     enemies.push_back(enemy);
 }
+void Shooter::takeDamage(float dmg) {
+    // Sprawdzenie czy shooter ju≈º nie ≈ºyje
+    if (health <= 0) return;
+
+    health -= dmg;
+    std::cout << "Shooter took " << dmg << " damage, health now: " << health << std::endl;
+    
+    // Zabezpieczenie przed ujemnym ≈ºyciem i wielokrotnym notify
+    if (health <= 0) {
+        health = 0;
+        Shooter::notifyEnemies();
+    }
+}
 
 // Gettery
 sf::Vector2f Shooter::getPosition() {
     return sprite.getPosition();
+}
+float Shooter::getHealth() {
+    return health;
 }
