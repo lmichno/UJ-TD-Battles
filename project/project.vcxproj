@@ -133,7 +133,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="enemy.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="shooter.cpp" />
     <ClCompile Include="shooter.hpp" />
   </ItemGroup>
   <ItemGroup>

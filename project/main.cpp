@@ -81,7 +81,7 @@ int main()
 
     // Tekstury
     sf::Texture jaguar1("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
-	sf::Texture ludzik("ludzik.png", false, sf::IntRect({ 0, 0 }, { 32, 32 }));
+	sf::Texture ludzik("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
 	sf::Texture sidePanel("sidePanel.png");
 
     //Sprite
@@ -95,7 +95,9 @@ int main()
     }
     for (int i = 0; i < 10; i++)
     {
-		enemies.emplace_back(ludzik, randFloat(0.f, 656.0f), shooters[randInt(0, static_cast<int>(shooters.size() - 1))].getPosition()); // Jako target podajemy losowego shootera
+        int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
+		enemies.emplace_back(ludzik, randFloat(0.f, 656.0f), &shooters[randomT]); // Jako target podajemy losowego shootera
+		shooters[randomT].addEnemy(&enemies[i]);
     }
 
 
