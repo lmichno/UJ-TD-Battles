@@ -28,7 +28,7 @@ int main()
     std::vector<std::unique_ptr<Enemy>> enemies; //
     int money = 100;
     int moneyAdd = 15;
-
+    float buyCooldown = 0.0f; // odstep zakupu jdenostek
 
     //Fonty
     sf::Font mediumGothic("ScienceGothic-Medium.ttf");
@@ -84,6 +84,7 @@ int main()
     sf::Texture jaguar1("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
     sf::Texture ludzik("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
     sf::Texture ludzik2("wrog2.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
+    sf::Texture ludzik3("wrog3.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
     sf::Texture sidePanel("sidePanel.png");
 
     //Sprite
@@ -104,9 +105,10 @@ int main()
     for (int i = 0; i < 2; i++)
     {
         int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
-        enemies.push_back(std::make_unique<Enemy>(ludzik2, randFloat(0.f, 656.0f), shooters[randomT].get(), 1));
+        enemies.push_back(std::make_unique<Enemy>(ludzik3, randFloat(0.f, 656.0f), shooters[randomT].get(), 0));
         shooters[randomT]->addEnemy(enemies.back().get());
     }
+    
 
     //TEMP
     sf::RectangleShape rectangle({ 5, 720 });
@@ -145,6 +147,9 @@ int main()
         // Wyliczanie dt (czas między kolejnymi klatkami)
         sf::Time deltaTime = clock.restart();
         float dt = deltaTime.asSeconds();
+        // czas do kupowania jednostek
+        buyCooldown -= dt;
+        if (buyCooldown < 0) buyCooldown = 0;
 
         // Czyszczenie okna
         window.clear(sf::Color::White);
@@ -161,6 +166,13 @@ int main()
         // Update Shooterów
         for (auto& shooter : shooters) {
             shooter->update(dt);
+        }
+        //dodawanie Shooterów
+        if (jaguar1Button.getIsPressed() && money >= jaguar1Button.getCost() && buyCooldown==0) {
+            money -= jaguar1Button.getCost();
+            shooters.push_back(std::make_unique<Shooter>(jaguar1, randFloat(120.f, 170.f), randFloat(0.f, 656.0f)));
+            kasa.setString(std::to_string(money));
+            buyCooldown = 0.5f;
         }
         
         // Usuwanie martwych shooterów
@@ -213,7 +225,9 @@ int main()
 
         window.display();
     }
+   
 }
+
 
 float randFloat(float a, float b) {
     std::uniform_real_distribution<float> dist(a, b);
