@@ -133,6 +133,13 @@ int main()
                 jaguar2Button.onMouseReleased();
                 jaguar3Button.onMouseReleased();
                 jaguar4Button.onMouseReleased();
+
+                jaguar1Button.onClicked(money);
+                jaguar2Button.onClicked(money);
+                jaguar3Button.onClicked(money);
+                jaguar4Button.onClicked(money);
+
+                kasa.setString(std::to_string(money));
             }
         }
 

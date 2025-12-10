@@ -75,7 +75,13 @@ bool Button::getIsHovered() const
 }
 
 //Obs³uga klikniêcia
-void Button::onClicked()
+void Button::onClicked(int& money)
 {
-    // temp
+    if (isHovered)
+    {
+        if (money >= cost)
+        {
+            money -= cost;
+        }
+    }
 }
