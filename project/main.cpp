@@ -101,7 +101,12 @@ int main()
         enemies.push_back(std::make_unique<Enemy>(ludzik, randFloat(0.f, 656.0f), shooters[randomT].get(),0));
         shooters[randomT]->addEnemy(enemies.back().get());
     }
-
+    for (int i = 0; i < 2; i++)
+    {
+        int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
+        enemies.push_back(std::make_unique<Enemy>(ludzik2, randFloat(0.f, 656.0f), shooters[randomT].get(), 1));
+        shooters[randomT]->addEnemy(enemies.back().get());
+    }
 
     //TEMP
     sf::RectangleShape rectangle({ 5, 720 });
