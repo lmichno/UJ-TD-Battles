@@ -158,6 +158,7 @@ int main()
         for (auto& shooter : shooters) {
             shooter->update(dt);
         }
+
         // Usuwanie martwych shooterów
         auto it = std::remove_if(shooters.begin(), shooters.end(), [](const auto& s) {
             return s->getHealth() <= 0;
@@ -208,9 +209,7 @@ int main()
 
         window.display();
     }
-   
 }
-
 
 float randFloat(float a, float b) {
     std::uniform_real_distribution<float> dist(a, b);

@@ -8,6 +8,7 @@ Shooter::Shooter(const sf::Texture& texture, float randX, float randY)
 {
     sprite.setPosition({ randX, randY });
     sprite.setScale({ 2, 2 });
+    
     timeSinceLastFrame = 0.0f;
     frameDuration = 0.2f; // Długość animacji w sekundach
     currentFrame = 0;
