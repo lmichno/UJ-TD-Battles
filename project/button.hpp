@@ -91,8 +91,4 @@ public:
     {
         // temp
     }
-   /* int getCost() const
-    {
-        return cost;
-    }*/
 };

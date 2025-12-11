@@ -28,7 +28,6 @@ int main()
     std::vector<std::unique_ptr<Enemy>> enemies; //
     int money = 100;
     int moneyAdd = 15;
-    //float buyCooldown = 0.0f; // odstep zakupu jdenostek
 
     //Fonty
     sf::Font mediumGothic("ScienceGothic-Medium.ttf");
@@ -167,14 +166,6 @@ int main()
         for (auto& shooter : shooters) {
             shooter->update(dt);
         }
-        //dodawanie Shooterów
-        /*if (jaguar1Button.getIsPressed() && money >= jaguar1Button.getCost() && buyCooldown==0) {
-            money -= jaguar1Button.getCost();
-            shooters.push_back(std::make_unique<Shooter>(jaguar1, randFloat(120.f, 170.f), randFloat(0.f, 656.0f)));
-            kasa.setString(std::to_string(money));
-            buyCooldown = 0.5f;
-        }
-        */
         // Usuwanie martwych shooterów
         auto it = std::remove_if(shooters.begin(), shooters.end(), [](const auto& s) {
             return s->getHealth() <= 0;
