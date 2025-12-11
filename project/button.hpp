@@ -78,14 +78,12 @@ public:
     {
         return isPressed;
     }
-    
 
     bool getIsHovered() const
     {
         return isHovered;
     }
-    
-  
+
     //Obs³uga klikniêcia
     void onClicked()
     {

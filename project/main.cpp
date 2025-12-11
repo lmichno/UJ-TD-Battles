@@ -29,6 +29,7 @@ int main()
     int money = 100;
     int moneyAdd = 15;
 
+
     //Fonty
     sf::Font mediumGothic("ScienceGothic-Medium.ttf");
 
@@ -101,12 +102,6 @@ int main()
         enemies.push_back(std::make_unique<Enemy>(ludzik, randFloat(0.f, 656.0f), shooters[randomT].get(),0));
         shooters[randomT]->addEnemy(enemies.back().get());
     }
-    for (int i = 0; i < 2; i++)
-    {
-        int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
-        enemies.push_back(std::make_unique<Enemy>(ludzik3, randFloat(0.f, 656.0f), shooters[randomT].get(), 0));
-        shooters[randomT]->addEnemy(enemies.back().get());
-    }
     
 
     //TEMP
@@ -146,9 +141,6 @@ int main()
         // Wyliczanie dt (czas między kolejnymi klatkami)
         sf::Time deltaTime = clock.restart();
         float dt = deltaTime.asSeconds();
-        // czas do kupowania jednostek
-        buyCooldown -= dt;
-        if (buyCooldown < 0) buyCooldown = 0;
 
         // Czyszczenie okna
         window.clear(sf::Color::White);
