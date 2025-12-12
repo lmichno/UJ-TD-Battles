@@ -27,7 +27,7 @@ private:
 
 public:
     // Konstruktor
-    Enemy(const sf::Texture& texture, float randY, Shooter* shooter);
+    Enemy(const sf::Texture& texture, float randY, Shooter* shooter, int type);
 
     // Funkcje
 
