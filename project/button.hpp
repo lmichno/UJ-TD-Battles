@@ -32,5 +32,5 @@ public:
     bool getIsHovered() const;
 
     //Obs³uga klikniêcia
-    void onClicked(int &money);
+    bool onClicked(int &money);
 };
