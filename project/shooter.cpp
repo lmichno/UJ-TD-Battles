@@ -6,6 +6,8 @@
 Shooter::Shooter(const sf::Texture& texture, float randX, float randY)
     : sprite(texture) // sf::Sprite dla SFML 3.0> nie ma domyślnego kontruktora, więc musimy upewnić się, że sprite dostanie teksturę zanim będziemy wykonywać na nim jakiekolwiek operacje
 {
+    sprite.setTextureRect(sf::IntRect({ 0, 0 }, { 16, 32 }));
+
     sprite.setPosition({ randX, randY });
     sprite.setScale({ 2, 2 });
 
