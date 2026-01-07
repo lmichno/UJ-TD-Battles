@@ -14,7 +14,7 @@ Shooter::Shooter(const sf::Texture& texture, float randX, float randY)
     currentFrame = 0;
     totalFrames = 2;
 
-    health = 10000.0f;
+    health = 3.0f;
     demage = 1.0f;
     range = 1.0f;
     accuracy = 1.0f;

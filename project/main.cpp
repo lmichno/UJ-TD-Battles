@@ -29,7 +29,7 @@ int main()
     int money = 100;
     int moneyAdd = 15;
 
-    int currentWave = 7;
+    int currentWave = 1;
 
     //Pierwsza fala wrogów
     float wave1Duration = 45.0f;      // czas trwania fali 1
