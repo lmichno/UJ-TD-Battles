@@ -29,6 +29,41 @@ int main()
     int money = 100;
     int moneyAdd = 15;
 
+    int currentWave = 1;
+
+    //Pierwsza fala wrogów
+    float wave1Duration = 45.0f;      // czas trwania fali 1
+    float lastEnemySpawnTime1 = -5.0f; // żeby pierwszy wróg był od razu
+
+    //Druga fala wrogów
+    float wave2Duration = 45.0f; //czas trwania fali s
+    float lastEnemySpawnTime2 = -3.0f; //żeby pierwszy wróg byl odrazu
+
+    //Trzecia fala wrogów
+    float wave3Duration = 45.0f; // czas trwania fali 3
+    float lastEnemySpawnTime3 = -2.0f; // żeby pierwszy wróg był od razu
+
+    //Czwarta fala wrogów
+    float wave4Duration = 45.0f; // czas trwania fali 4
+    float lastEnemySpawnTime4 = -2.0f; // żeby pierwszy wróg był od razu
+
+    //Piąta fala wrogów
+    float wave5Duration = 45.0f; // czas trwania fali 5
+    float lastEnemySpawnTime5 = -2.0f; // żeby pierwszy wróg był od razu
+
+    //Szósta fala wrogów
+    float wave6Duration = 45.0f; // czas trwania fali 6
+    float lastEnemySpawnTime6 = -2.0f; // żeby pierwszy wróg był od razu
+
+    //Siódma fala wrogów
+    float wave7Duration = 30.0f;
+    float lastEnemySpawnTime7 = -1.0f;
+
+
+
+
+    sf::Clock waveClock; //czas trwania fali
+
 
     //Fonty
     sf::Font mediumGothic("ScienceGothic-Medium.ttf");
@@ -94,15 +129,15 @@ int main()
     // Operacje wstępne
     for (int i = 0; i < 20; i++)
     {
-        shooters.push_back(std::make_unique<Shooter>(jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f))); 
+        shooters.push_back(std::make_unique<Shooter>(jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f)));
     }
-    for (int i = 0; i < 2; i++)
+    /*for (int i = 0; i < 2; i++)
     {
         int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
         enemies.push_back(std::make_unique<Enemy>(ludzik, randFloat(0.f, 656.0f), shooters[randomT].get(),0));
         shooters[randomT]->addEnemy(enemies.back().get());
-    }
-    
+    }*/
+
 
     //TEMP
     sf::RectangleShape rectangle({ 5, 720 });
@@ -111,6 +146,10 @@ int main()
     sf::RectangleShape rect2({ 2, 720 });
     rect2.setFillColor(sf::Color::Black);
     rect2.setPosition({ 126, 0 });
+
+    //Start fali
+    waveClock.restart();
+
 
 
     while (window.isOpen()) // Główna pętla aplikacji
@@ -142,6 +181,494 @@ int main()
         sf::Time deltaTime = clock.restart();
         float dt = deltaTime.asSeconds();
 
+        float waveTime = waveClock.getElapsedTime().asSeconds();
+
+        //FALA 1 
+        if (currentWave == 1)
+        {
+            if (waveTime < wave1Duration)
+            {
+                float currentSpawnInterval;
+
+                if (waveTime < 15.0f)
+                    currentSpawnInterval = 5.0f;
+                else if (waveTime < 20.0f)
+                    currentSpawnInterval = 3.0f;
+                else if (waveTime < 30.0f)
+                    currentSpawnInterval = 2.0f;
+                else
+                    currentSpawnInterval = 1.0f;
+
+                if (waveTime - lastEnemySpawnTime1 >= currentSpawnInterval)
+                {
+                    lastEnemySpawnTime1 = waveTime;
+
+                    if (!shooters.empty())
+                    {
+                        int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
+                        enemies.push_back(std::make_unique<Enemy>(
+                            ludzik, randFloat(0.f, 656.0f), shooters[randomT].get(), 1));
+                        shooters[randomT]->addEnemy(enemies.back().get());
+                    }
+                }
+            }
+            else
+            {
+                //PRZEJŚCIE DO FALI 2
+                currentWave = 2;
+                waveClock.restart();
+                lastEnemySpawnTime2 = -3.0f;
+            }
+        }
+
+        // FALA 2 
+        else if (currentWave == 2)
+        {
+            if (waveTime < wave2Duration)
+            {
+                float currentSpawnInterval;
+
+                if (waveTime < 15.0f)
+                    currentSpawnInterval = 3.0f;
+                else if (waveTime < 30.0f)
+                    currentSpawnInterval = 2.0f;
+                else
+                    currentSpawnInterval = 1.0f;
+
+                if (waveTime - lastEnemySpawnTime2 >= currentSpawnInterval)
+                {
+                    lastEnemySpawnTime2 = waveTime;
+
+                    // SPAWN 2 WROGÓW
+                    
+                    if (!shooters.empty())
+                    {
+                        int randomT1 = randInt(0, static_cast<int>(shooters.size() - 1));
+                        enemies.push_back(std::make_unique<Enemy>(
+                            ludzik, randFloat(0.f, 656.0f), shooters[randomT1].get(), 1));
+                        shooters[randomT1]->addEnemy(enemies.back().get());
+
+                        int randomT2 = randInt(0, static_cast<int>(shooters.size() - 1));
+                        enemies.push_back(std::make_unique<Enemy>(
+                            ludzik2, randFloat(0.f, 656.0f), shooters[randomT2].get(), 1));
+                        shooters[randomT2]->addEnemy(enemies.back().get());
+                    }
+
+                }
+            }
+            else
+            {
+                currentWave = 3;
+                waveClock.restart();
+                lastEnemySpawnTime3 = -2.0f;
+            }
+        }
+        
+        // FALA 3
+        else if (currentWave == 3)
+        {
+            if (shooters.empty())
+                continue;
+            
+            if (waveTime < wave3Duration)
+            {
+                // ---- OKNA CZASOWE ----
+
+                // 0–4, 6–9, 11–14, 16–19 → 3 wrogów co 2 sekundy
+                bool tripleSpawnWindow =
+                    (waveTime >= 0 && waveTime < 4) ||
+                    (waveTime >= 6 && waveTime < 9) ||
+                    (waveTime >= 11 && waveTime < 14) ||
+                    (waveTime >= 16 && waveTime < 19);
+
+                // 21–24, 26–29 → 6 wrogów co 1 sekundę
+                bool sixSpawnWindow =
+                    (waveTime >= 21 && waveTime < 24) ||
+                    (waveTime >= 26 && waveTime < 29);
+
+                // 31–34, 36–39, 41–44 → 8 wrogów co 1 sekundę
+                bool eightSpawnWindow =
+                    (waveTime >= 31 && waveTime < 34) ||
+                    (waveTime >= 36 && waveTime < 39) ||
+                    (waveTime >= 41 && waveTime < 44);
+
+                // CO 5 SEKUND → 5 WROGÓW NARAZ
+                bool fiveSpawnMoment =
+                    static_cast<int>(waveTime) % 5 == 0 &&
+                    waveTime - lastEnemySpawnTime3 >= 1.0f;
+
+                // ---- SPAWN ----
+
+                // 3 wrogów co 2 sekundy
+                if (tripleSpawnWindow && waveTime - lastEnemySpawnTime3 >= 2.0f)
+                {
+                    lastEnemySpawnTime3 = waveTime;
+
+                    // 2x ludzik2
+                    for (int i = 0; i < 2; i++)
+                    {
+                        int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
+                        enemies.push_back(std::make_unique<Enemy>(
+                            ludzik2, randFloat(0.f, 656.0f), shooters[randomT].get(), 1));
+                        shooters[randomT]->addEnemy(enemies.back().get());
+                    }
+
+                    // 1x ludzik1
+                    {
+                        int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
+                        enemies.push_back(std::make_unique<Enemy>(
+                            ludzik, randFloat(0.f, 656.0f), shooters[randomT].get(), 1));
+                        shooters[randomT]->addEnemy(enemies.back().get());
+                    }
+
+                    
+                }
+
+                // 6 wrogów co 1 sekundę
+                else if (sixSpawnWindow && waveTime - lastEnemySpawnTime3 >= 1.0f)
+                {
+                    lastEnemySpawnTime3 = waveTime;
+
+                    // 4x ludzik2
+                    for (int i = 0; i < 4; i++)
+                    {
+                        int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
+                        enemies.push_back(std::make_unique<Enemy>(
+                            ludzik2, randFloat(0.f, 656.0f), shooters[randomT].get(), 1));
+                        shooters[randomT]->addEnemy(enemies.back().get());
+                    }
+
+                    // 2x ludzik3
+                    for (int i = 0; i < 2; i++)
+                    {
+                        int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
+                        enemies.push_back(std::make_unique<Enemy>(
+                            ludzik3, randFloat(0.f, 656.0f), shooters[randomT].get(), 1));
+                        shooters[randomT]->addEnemy(enemies.back().get());
+                    }
+
+                }
+
+                // 8 wrogów co 1 sekundę
+                else if (eightSpawnWindow && waveTime - lastEnemySpawnTime3 >= 1.0f)
+                {
+                    lastEnemySpawnTime3 = waveTime;
+
+                    // 5x ludzik3
+                    for (int i = 0; i < 5; i++)
+                    {
+                        int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
+                        enemies.push_back(std::make_unique<Enemy>(
+                            ludzik3, randFloat(0.f, 656.0f), shooters[randomT].get(), 1));
+                        shooters[randomT]->addEnemy(enemies.back().get());
+                    }
+
+                    // 3x ludzik2
+                    for (int i = 0; i < 3; i++)
+                    {
+                        int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
+                        enemies.push_back(std::make_unique<Enemy>(
+                            ludzik2, randFloat(0.f, 656.0f), shooters[randomT].get(), 1));
+                        shooters[randomT]->addEnemy(enemies.back().get());
+                    }
+
+                }
+
+                // 5 wrogów dokładnie co 5 sekund
+                else if (fiveSpawnMoment)
+                {
+                    lastEnemySpawnTime3 = waveTime;
+
+                    for (int i = 0; i < 5; i++)
+                    {
+                        int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
+                        enemies.push_back(std::make_unique<Enemy>(
+                            ludzik3,
+                            randFloat(0.f, 656.0f),
+                            shooters[randomT].get(),
+                            1
+                        ));
+                        shooters[randomT]->addEnemy(enemies.back().get());
+                    }
+                }
+            }
+            if (waveTime >= wave3Duration)
+            {
+                currentWave = 4;
+                waveClock.restart();
+                lastEnemySpawnTime4 = -2.0f;
+                continue; 
+            }
+        }
+
+        //FALA 4
+        else if (currentWave == 4)
+        {
+            if (shooters.empty())
+                continue;
+
+            if (waveTime < 45.0f)
+            {
+                // 0–15: co 3s → 2x ludzik2 + 1x ludzik1
+                if (waveTime < 15 && waveTime - lastEnemySpawnTime4 >= 3.0f)
+                {
+                    lastEnemySpawnTime4 = waveTime;
+
+                    // 4x ludzik2
+                    for (int i = 0; i < 4; i++)
+                    {
+                        int r = randInt(0, shooters.size() - 1);
+                        enemies.push_back(std::make_unique<Enemy>(
+                            ludzik2, randFloat(0, 656), shooters[r].get(), 1));
+                        shooters[r]->addEnemy(enemies.back().get());
+                    }
+
+                    // 1x ludzik1
+                    {
+                        int r = randInt(0, shooters.size() - 1);
+                        enemies.push_back(std::make_unique<Enemy>(
+                            ludzik, randFloat(0, 656), shooters[r].get(), 1));
+                        shooters[r]->addEnemy(enemies.back().get());
+                    }
+                }
+
+                // 15–30: co 4s → 3x ludzik2 + 3x ludzik3
+                else if (waveTime >= 15 && waveTime < 30 &&
+                    waveTime - lastEnemySpawnTime4 >= 2.0f)
+                {
+                    lastEnemySpawnTime4 = waveTime;
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        int r = randInt(0, shooters.size() - 1);
+                        enemies.push_back(std::make_unique<Enemy>(
+                            ludzik2, randFloat(0, 656), shooters[r].get(), 1));
+                        shooters[r]->addEnemy(enemies.back().get());
+                    }
+
+                    for (int i = 0; i < 3;i++)
+                    {
+                        int r = randInt(0, shooters.size() - 1);
+                        enemies.push_back(std::make_unique<Enemy>(
+                            ludzik3, randFloat(0, 656), shooters[r].get(), 1));
+                        shooters[r]->addEnemy(enemies.back().get());
+                    }
+                }
+
+                // 30–45: co 3s → 2x ludzik3 + 3x ludzik2
+                else if (waveTime >= 30 &&
+                    waveTime - lastEnemySpawnTime4 >= 3.0f)
+                {
+                    lastEnemySpawnTime4 = waveTime;
+
+                    for (int i = 0; i < 2; i++)
+                    {
+                        int r = randInt(0, shooters.size() - 1);
+                        enemies.push_back(std::make_unique<Enemy>(
+                            ludzik3, randFloat(0, 656), shooters[r].get(), 1));
+                        shooters[r]->addEnemy(enemies.back().get());
+                    }
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        int r = randInt(0, shooters.size() - 1);
+                        enemies.push_back(std::make_unique<Enemy>(
+                            ludzik2, randFloat(0, 656), shooters[r].get(), 1));
+                        shooters[r]->addEnemy(enemies.back().get());
+                    }
+                }
+                if (waveTime >= wave3Duration)
+                {
+                    currentWave = 5;
+                    waveClock.restart();
+                    lastEnemySpawnTime5 = -2.0f;
+                    continue;
+                }
+            }
+}
+
+        //FALA 5
+        else if (currentWave == 5)
+        {
+            if (shooters.empty())
+                continue;
+
+            if (waveTime < 45.0f &&
+                waveTime - lastEnemySpawnTime5 >= 3.0f)
+            {
+                lastEnemySpawnTime5 = waveTime;
+
+                // 4x ludzik3
+                for (int i = 0; i < 4; i++)
+                {
+                    int r = randInt(0, shooters.size() - 1);
+                    enemies.push_back(std::make_unique<Enemy>(
+                        ludzik3, randFloat(0, 656), shooters[r].get(), 1));
+                    shooters[r]->addEnemy(enemies.back().get());
+                }
+
+                // 3x ludzik2 i 4x ludzik3
+                for (int i = 0; i < 3; i++)
+                {
+                    int r = randInt(0, shooters.size() - 1);
+                    enemies.push_back(std::make_unique<Enemy>(
+                        ludzik2, randFloat(0, 656), shooters[r].get(), 1));
+                    shooters[r]->addEnemy(enemies.back().get());
+                }
+                for (int i = 0; i < 4; i++)
+                {
+                    int r = randInt(0, shooters.size() - 1);
+                    enemies.push_back(std::make_unique<Enemy>(
+                        ludzik3, randFloat(0, 656), shooters[r].get(), 1));
+                    shooters[r]->addEnemy(enemies.back().get());
+                }
+
+                // 1x ludzik1 (distraction)
+                int r = randInt(0, shooters.size() - 1);
+                enemies.push_back(std::make_unique<Enemy>(
+                    ludzik, randFloat(0, 656), shooters[r].get(), 1));
+                shooters[r]->addEnemy(enemies.back().get());
+            }
+            if (waveTime >= wave3Duration)
+            {
+                currentWave = 6;
+                waveClock.restart();
+                lastEnemySpawnTime6 = -2.0f;
+                continue;
+            }
+            }
+
+       //FALA 6
+        else if (currentWave == 6)
+        {
+            if (shooters.empty())
+                continue;
+
+            if (waveTime < 45.0f &&
+                waveTime - lastEnemySpawnTime6 >= 4.0f)
+            {
+                lastEnemySpawnTime6 = waveTime;
+
+                // 6x ludzik3
+                for (int i = 0; i < 6; i++)
+                {
+                    int r = randInt(0, shooters.size() - 1);
+                    enemies.push_back(std::make_unique<Enemy>(
+                        ludzik3, randFloat(0, 656), shooters[r].get(), 1));
+                    shooters[r]->addEnemy(enemies.back().get());
+                }
+
+                // 2x ludzik2
+                for (int i = 0; i < 2; i++)
+                {
+                    int r = randInt(0, shooters.size() - 1);
+                    enemies.push_back(std::make_unique<Enemy>(
+                        ludzik2, randFloat(0, 656), shooters[r].get(), 1));
+                    shooters[r]->addEnemy(enemies.back().get());
+                }
+          
+
+            }
+            else
+            {
+                currentWave = 7;
+                waveClock.restart();
+                lastEnemySpawnTime7 = -1.0f;
+            }
+
+}
+
+//FALA 7
+        else if (currentWave == 7)
+        {
+            if (shooters.empty())
+                continue;
+
+            
+            if (waveTime >= wave7Duration)
+                continue;
+
+            // ---- OKNA CZASOWE ----
+
+            // 0–10s → 4 wrogów co 1.5s (3x ludzik3 + 1x ludzik2)
+            bool earlyPressure = waveTime < 10.0f;
+
+            // 10–20s → 6 wrogów co 1s (4x ludzik3 + 2x ludzik2)
+            bool midChaos = waveTime >= 10.0f && waveTime < 20.0f;
+
+            // 20–30s → 10 wrogów co 1s (7x ludzik3 + 3x ludzik2)
+            bool finalStorm = waveTime >= 20.0f;
+
+            // ---- SPAWN ----
+
+            //EARLY
+            if (earlyPressure && waveTime - lastEnemySpawnTime7 >= 1.5f)
+            {
+                lastEnemySpawnTime7 = waveTime;
+
+                for (int i = 0; i < 3; i++)
+                {
+                    int r = randInt(0, shooters.size() - 1);
+                    enemies.push_back(std::make_unique<Enemy>(
+                        ludzik3, randFloat(0.f, 656.f), shooters[r].get(), 1));
+                    shooters[r]->addEnemy(enemies.back().get());
+                }
+
+                int r = randInt(0, shooters.size() - 1);
+                enemies.push_back(std::make_unique<Enemy>(
+                    ludzik2, randFloat(0.f, 656.f), shooters[r].get(), 1));
+                shooters[r]->addEnemy(enemies.back().get());
+            }
+
+            // MID
+            else if (midChaos && waveTime - lastEnemySpawnTime7 >= 1.0f)
+            {
+                lastEnemySpawnTime7 = waveTime;
+
+                for (int i = 0; i < 4; i++)
+                {
+                    int r = randInt(0, shooters.size() - 1);
+                    enemies.push_back(std::make_unique<Enemy>(
+                        ludzik3, randFloat(0.f, 656.f), shooters[r].get(), 1));
+                    shooters[r]->addEnemy(enemies.back().get());
+                }
+
+                for (int i = 0; i < 2; i++)
+                {
+                    int r = randInt(0, shooters.size() - 1);
+                    enemies.push_back(std::make_unique<Enemy>(
+                        ludzik2, randFloat(0.f, 656.f), shooters[r].get(), 1));
+                    shooters[r]->addEnemy(enemies.back().get());
+                }
+            }
+
+            //FINAL
+            else if (finalStorm && waveTime - lastEnemySpawnTime7 >= 1.0f)
+            {
+                lastEnemySpawnTime7 = waveTime;
+
+                for (int i = 0; i < 7; i++)
+                {
+                    int r = randInt(0, shooters.size() - 1);
+                    enemies.push_back(std::make_unique<Enemy>(
+                        ludzik3, randFloat(0.f, 656.f), shooters[r].get(), 1));
+                    shooters[r]->addEnemy(enemies.back().get());
+                }
+
+                for (int i = 0; i < 3; i++)
+                {
+                    int r = randInt(0, shooters.size() - 1);
+                    enemies.push_back(std::make_unique<Enemy>(
+                        ludzik2, randFloat(0.f, 656.f), shooters[r].get(), 1));
+                    shooters[r]->addEnemy(enemies.back().get());
+                }
+            }
+            }
+
+
+
+
+
         // Czyszczenie okna
         window.clear(sf::Color::White);
 
@@ -162,12 +689,12 @@ int main()
         // Usuwanie martwych shooterów
         auto it = std::remove_if(shooters.begin(), shooters.end(), [](const auto& s) {
             return s->getHealth() <= 0;
-        });
+            });
         shooters.erase(it, shooters.end());
 
         // Update Enemies
         for (auto& enemy : enemies) { // Iteracja po unique_ptr
-			if (shooters.empty()) enemy->setTarget(nullptr);
+            if (shooters.empty()) enemy->setTarget(nullptr);
             if (enemy->getTarget() == nullptr) {
                 // Jeśli nie ma celu, skip
                 if (!shooters.empty()) {
@@ -201,7 +728,7 @@ int main()
         for (const auto& shooter : shooters) {
             shooter->draw(window);
         }
-        
+
         // Rysowanie enemies
         for (const auto& enemy : enemies) {
             enemy->draw(window);
