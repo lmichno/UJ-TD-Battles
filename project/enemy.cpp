@@ -72,6 +72,9 @@ Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
 //Funkcje
 void Enemy::update(float dt) {
 
+    if (target != nullptr)
+        targetPos = target->getPosition();
+    
     if (sprite.getPosition().x - targetPos.x > range || target == nullptr || targetPos.x < 0)
     {
         sprite.move({ -(walkingSpeed * dt), 0 });
@@ -147,9 +150,9 @@ void Enemy::setTarget(Shooter* newTarget) {
 }
 
 //Gettery
-sf::Vector2f Enemy::getPosition() {
+sf::Vector2f Enemy::getPosition() const {
     return sprite.getPosition();
 }
-Shooter* Enemy::getTarget() {
+Shooter* Enemy::getTarget() const {
     return target;
 }

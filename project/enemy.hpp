@@ -40,6 +40,6 @@ public:
     void setTarget(Shooter* newTarget);
 
     // Gettery
-    sf::Vector2f getPosition();
-	Shooter* getTarget();
+    sf::Vector2f getPosition() const;
+	Shooter* getTarget() const;
 };
