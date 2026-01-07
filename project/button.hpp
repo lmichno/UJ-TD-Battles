@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 class Button
 {
@@ -12,81 +13,24 @@ private:
 
 public:
     // Konstruktor
-    Button(float x, float y, float width, float height, int costG)
-        : isHovered(false), isPressed(false)
-    {
-        hitbox.setSize({ width, height });
-        hitbox.setPosition({ x, y });
-        hitbox.setFillColor(sf::Color::Transparent);
-
-        overlay.setSize({ width, height });
-        overlay.setPosition({ x, y });
-        overlay.setFillColor(sf::Color::White);
-
-		cost = costG;
-    }
+    Button(float x, float y, float width, float height, int costG);
 
     // Aktualizacja stanu przycisku
-    void update(sf::Vector2f mousePos, int money)
-    {
-        isHovered = hitbox.getGlobalBounds().contains(mousePos);
-
-        if (isHovered && !isPressed && money - cost >= 0)
-        {
-            overlay.setFillColor(sf::Color(0, 255, 0, 50)); // Wysoka przezroczystoœæ przy najechaniu
-        }
-        else if (isPressed && money - cost >= 0)
-        {
-            overlay.setFillColor(sf::Color(0, 255, 0, 150)); // Niska przezroczystoœæ przy klikniêciu
-        }
-		else if (isHovered && !isPressed && money - cost < 0) 
-        {
-            overlay.setFillColor(sf::Color(255, 0, 0, 50)); // Czerwony przy najechaniu gdy brak kasy
-        }
-		else if (isPressed && money - cost < 0)
-        {
-            overlay.setFillColor(sf::Color(255, 0, 0, 150)); // Czerwony przy klikniêciu gdy brak kasy
-        }
-        else
-        {
-            overlay.setFillColor(sf::Color::Transparent);
-        }
-    }
+    void update(sf::Vector2f mousePos, int money);
 
     // Klikniêcie
-    void onMousePressed()
-    {
-        if (isHovered)
-        {
-            isPressed = true;
-        }
-    }
+    void onMousePressed();
 
-    void onMouseReleased()
-    {
-        isPressed = false;
-    }
+    void onMouseReleased();
 
     // Rysowanie
-    void draw(sf::RenderWindow& window)
-    {
-        window.draw(overlay);
-    }
+    void draw(sf::RenderWindow& window);
 
     // Gettery
-    bool getIsPressed() const
-    {
-        return isPressed;
-    }
+    bool getIsPressed() const;
 
-    bool getIsHovered() const
-    {
-        return isHovered;
-    }
+    bool getIsHovered() const;
 
     //Obs³uga klikniêcia
-    void onClicked()
-    {
-        // temp
-    }
+    bool onClicked(int &money);
 };

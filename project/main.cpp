@@ -174,6 +174,16 @@ int main()
                 jaguar2Button.onMouseReleased();
                 jaguar3Button.onMouseReleased();
                 jaguar4Button.onMouseReleased();
+
+                if (jaguar1Button.onClicked(money))
+                {
+                    shooters.push_back(std::make_unique<Shooter>(jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f)));
+                }
+                jaguar2Button.onClicked(money);
+                jaguar3Button.onClicked(money);
+                jaguar4Button.onClicked(money);
+
+                kasa.setString(std::to_string(money));
             }
         }
 
