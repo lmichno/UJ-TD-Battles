@@ -86,6 +86,15 @@ int main()
     sf::Texture ludzik2("wrog2.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
     sf::Texture ludzik3("wrog3.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
     sf::Texture sidePanel("sidePanel.png");
+    sf::Texture backgroundTexture;
+backgroundTexture.loadFromFile("background.png");
+
+sf::Sprite backgroundSprite(backgroundTexture);
+backgroundSprite.setScale({
+    1280.f / backgroundTexture.getSize().x,
+    720.f / backgroundTexture.getSize().y
+    });
+
 
     //Sprite
     sf::Sprite sidePanelSprite(sidePanel);
@@ -180,6 +189,9 @@ int main()
         }
 
         // Draw
+        window.clear();
+        window.draw(backgroundSprite);
+
         window.draw(rectangle);
         window.draw(rect2);
 
