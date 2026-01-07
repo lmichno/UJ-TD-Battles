@@ -117,6 +117,8 @@ int main()
 
     // Tekstury
     sf::Texture jaguar1("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
+    sf::Texture jaguar2("wrog2.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
+    sf::Texture jaguar3("wrog3.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
     sf::Texture ludzik("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
     sf::Texture ludzik2("wrog2.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
     sf::Texture ludzik3("wrog3.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
@@ -179,8 +181,26 @@ int main()
                 {
                     shooters.push_back(std::make_unique<Shooter>(jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f)));
                 }
-                jaguar2Button.onClicked(money);
-                jaguar3Button.onClicked(money);
+                
+                if (jaguar2Button.onClicked(money))
+                {
+                    shooters.push_back(std::make_unique<Shooter>(
+                        jaguar2,
+                        randFloat(130.f, 170.f),
+                        randFloat(0.f, 656.0f)
+                    ));
+                }
+
+                if (jaguar3Button.onClicked(money))
+                {
+                    shooters.push_back(std::make_unique<Shooter>(
+                        jaguar3,
+                        randFloat(130.f, 170.f),
+                        randFloat(0.f, 656.0f)
+                    ));
+                }
+
+              
                 jaguar4Button.onClicked(money);
 
                 kasa.setString(std::to_string(money));
