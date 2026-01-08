@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="bullet.cpp" />
     <ClCompile Include="button.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="main.cpp" />
@@ -140,6 +141,7 @@
     <ClCompile Include="shooter.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bullet.hpp" />
     <ClInclude Include="button.hpp" />
     <ClInclude Include="enemy.hpp" />
   </ItemGroup>

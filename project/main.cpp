@@ -7,6 +7,7 @@
 #include "shooter.hpp"
 #include "enemy.hpp"
 #include "button.hpp"
+#include "bullet.hpp"
 
 std::mt19937 rng(std::random_device{}()); // Globalny generator losowy
 
@@ -26,8 +27,8 @@ int main()
     // Używamy unique_ptr, aby adresy w pamięci były stałe (dla Enemy::target i Shooter::enemies)
     std::vector<std::unique_ptr<Shooter>> shooters;
     std::vector<std::unique_ptr<Enemy>> enemies; //
-    int money = 100;
-    int moneyAdd = 15;
+    int money = 0;
+    int moneyAdd = 5;
 	float moneyTimer = 0.0f;
 
     //Linia przegranej
@@ -119,7 +120,7 @@ int main()
     jaguar4Cost.setString("120");
     jaguar4Cost.setPosition({ 15, 540 });
     //BOCZNY PANEL--------------------------
-    
+
     // Tekstury
     sf::Texture jaguar1("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
     sf::Texture jaguar2("wrog2.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
@@ -230,10 +231,10 @@ int main()
 
         // Dodawanie pieniędzy co sekundę (korzysta z dt, stabilne przy zmiennym FPS)
         moneyTimer += dt;
-        while (moneyTimer >= 1.0f)
+        while (moneyTimer >= 3.0f)
         {
             money += moneyAdd;
-            moneyTimer -= 1.0f;
+            moneyTimer = 0.0f;
         }
         kasa.setString(std::to_string(money));
 
@@ -261,7 +262,7 @@ int main()
                     {
                         int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
                         enemies.push_back(std::make_unique<Enemy>(
-                            ludzik, randFloat(0.f, 656.0f), shooters[randomT].get(), 1));
+                            ludzik, randFloat(0.f, 656.0f), shooters[randomT].get(), 0));
                         shooters[randomT]->addEnemy(enemies.back().get());
                     }
                 }
@@ -299,7 +300,7 @@ int main()
                     {
                         int randomT1 = randInt(0, static_cast<int>(shooters.size() - 1));
                         enemies.push_back(std::make_unique<Enemy>(
-                            ludzik, randFloat(0.f, 656.0f), shooters[randomT1].get(), 1));
+                            ludzik, randFloat(0.f, 656.0f), shooters[randomT1].get(), 0));
                         shooters[randomT1]->addEnemy(enemies.back().get());
 
                         int randomT2 = randInt(0, static_cast<int>(shooters.size() - 1));
@@ -371,7 +372,7 @@ int main()
                     {
                         int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
                         enemies.push_back(std::make_unique<Enemy>(
-                            ludzik, randFloat(0.f, 656.0f), shooters[randomT].get(), 1));
+                            ludzik, randFloat(0.f, 656.0f), shooters[randomT].get(), 0));
                         shooters[randomT]->addEnemy(enemies.back().get());
                     }
 
@@ -397,7 +398,7 @@ int main()
                     {
                         int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
                         enemies.push_back(std::make_unique<Enemy>(
-                            ludzik3, randFloat(0.f, 656.0f), shooters[randomT].get(), 1));
+                            ludzik3, randFloat(0.f, 656.0f), shooters[randomT].get(), 2));
                         shooters[randomT]->addEnemy(enemies.back().get());
                     }
 
@@ -413,7 +414,7 @@ int main()
                     {
                         int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
                         enemies.push_back(std::make_unique<Enemy>(
-                            ludzik3, randFloat(0.f, 656.0f), shooters[randomT].get(), 1));
+                            ludzik3, randFloat(0.f, 656.0f), shooters[randomT].get(), 2));
                         shooters[randomT]->addEnemy(enemies.back().get());
                     }
 
@@ -436,12 +437,7 @@ int main()
                     for (int i = 0; i < 5; i++)
                     {
                         int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
-                        enemies.push_back(std::make_unique<Enemy>(
-                            ludzik3,
-                            randFloat(0.f, 656.0f),
-                            shooters[randomT].get(),
-                            1
-                        ));
+                        enemies.push_back(std::make_unique<Enemy>(ludzik3, randFloat(0.f, 656.0f), shooters[randomT].get(), 2));
                         shooters[randomT]->addEnemy(enemies.back().get());
                     }
                 }
@@ -481,7 +477,7 @@ int main()
                     {
                         int r = randInt(0, shooters.size() - 1);
                         enemies.push_back(std::make_unique<Enemy>(
-                            ludzik, randFloat(0, 656), shooters[r].get(), 1));
+                            ludzik, randFloat(0, 656), shooters[r].get(), 0));
                         shooters[r]->addEnemy(enemies.back().get());
                     }
                 }
@@ -504,7 +500,7 @@ int main()
                     {
                         int r = randInt(0, shooters.size() - 1);
                         enemies.push_back(std::make_unique<Enemy>(
-                            ludzik3, randFloat(0, 656), shooters[r].get(), 1));
+                            ludzik3, randFloat(0, 656), shooters[r].get(), 2));
                         shooters[r]->addEnemy(enemies.back().get());
                     }
                 }
@@ -519,7 +515,7 @@ int main()
                     {
                         int r = randInt(0, shooters.size() - 1);
                         enemies.push_back(std::make_unique<Enemy>(
-                            ludzik3, randFloat(0, 656), shooters[r].get(), 1));
+                            ludzik3, randFloat(0, 656), shooters[r].get(), 2));
                         shooters[r]->addEnemy(enemies.back().get());
                     }
 
@@ -557,7 +553,7 @@ int main()
                 {
                     int r = randInt(0, shooters.size() - 1);
                     enemies.push_back(std::make_unique<Enemy>(
-                        ludzik3, randFloat(0, 656), shooters[r].get(), 1));
+                        ludzik3, randFloat(0, 656), shooters[r].get(), 2));
                     shooters[r]->addEnemy(enemies.back().get());
                 }
 
@@ -573,14 +569,14 @@ int main()
                 {
                     int r = randInt(0, shooters.size() - 1);
                     enemies.push_back(std::make_unique<Enemy>(
-                        ludzik3, randFloat(0, 656), shooters[r].get(), 1));
+                        ludzik3, randFloat(0, 656), shooters[r].get(), 2));
                     shooters[r]->addEnemy(enemies.back().get());
                 }
 
                 // 1x ludzik1 (distraction)
                 int r = randInt(0, shooters.size() - 1);
                 enemies.push_back(std::make_unique<Enemy>(
-                    ludzik, randFloat(0, 656), shooters[r].get(), 1));
+                    ludzik, randFloat(0, 656), shooters[r].get(), 0));
                 shooters[r]->addEnemy(enemies.back().get());
             }
             if (waveTime >= wave3Duration)
@@ -608,7 +604,7 @@ int main()
                 {
                     int r = randInt(0, shooters.size() - 1);
                     enemies.push_back(std::make_unique<Enemy>(
-                        ludzik3, randFloat(0, 656), shooters[r].get(), 1));
+                        ludzik3, randFloat(0, 656), shooters[r].get(), 2));
                     shooters[r]->addEnemy(enemies.back().get());
                 }
 
@@ -664,7 +660,7 @@ int main()
                 {
                     int r = randInt(0, shooters.size() - 1);
                     enemies.push_back(std::make_unique<Enemy>(
-                        ludzik3, randFloat(0.f, 656.f), shooters[r].get(), 1));
+                        ludzik3, randFloat(0.f, 656.f), shooters[r].get(), 2));
                     shooters[r]->addEnemy(enemies.back().get());
                 }
 
@@ -683,7 +679,7 @@ int main()
                 {
                     int r = randInt(0, shooters.size() - 1);
                     enemies.push_back(std::make_unique<Enemy>(
-                        ludzik3, randFloat(0.f, 656.f), shooters[r].get(), 1));
+                        ludzik3, randFloat(0.f, 656.f), shooters[r].get(), 2));
                     shooters[r]->addEnemy(enemies.back().get());
                 }
 
@@ -705,7 +701,7 @@ int main()
                 {
                     int r = randInt(0, shooters.size() - 1);
                     enemies.push_back(std::make_unique<Enemy>(
-                        ludzik3, randFloat(0.f, 656.f), shooters[r].get(), 1));
+                        ludzik3, randFloat(0.f, 656.f), shooters[r].get(), 2));
                     shooters[r]->addEnemy(enemies.back().get());
                 }
 
@@ -740,6 +736,16 @@ int main()
         // Update Shooterów
         for (auto& shooter : shooters) {
             shooter->update(dt);
+            
+            // Shooterzy szukają i strzelają do dowolnego wroga w zasięgu
+            Enemy* target = shooter->findNearestEnemy(enemies);
+            if (target != nullptr)
+            {
+                shooter->shoot(target, bullet);
+            }
+            
+            // Aktualizuj pociski dla każdego shootera
+            shooter->updateBullets(dt, enemies);
         }
 
         // Usuwanie martwych shooterów
@@ -764,26 +770,17 @@ int main()
             //GAME OVER CHECK
             if (enemy->getPosition().x < gameOverLineX)
             {
+				std::cout << "GAME OVER!" << std::endl;
                 gameOver = true;
                 break;
             }
         }
 
-        if (gameOver)
-        {
-            window.clear(sf::Color::Black);
-
-            sf::Text gameOverText(mediumGothic);
-            gameOverText.setString("GAME OVER");
-            gameOverText.setCharacterSize(72);
-            gameOverText.setFillColor(sf::Color::Red);
-            gameOverText.setPosition({ 400, 300 });
-
-            window.draw(gameOverText);
-            window.display();
-
-            continue; // zatrzymuje dalszą logikę gry
-        }
+        // Usuwanie martwych wrogów
+        auto enemyIt = std::remove_if(enemies.begin(), enemies.end(), [](const auto& e) {
+            return !e->isAlive();
+            });
+        enemies.erase(enemyIt, enemies.end());
 
         // Draw
         window.draw(rectangle);
@@ -806,6 +803,8 @@ int main()
         // Rysowanie shooterów
         for (const auto& shooter : shooters) {
             shooter->draw(window);
+            // Rysowanie pocisków dla każdego shootera
+            shooter->drawBullets(window);
         }
 
         // Rysowanie enemies

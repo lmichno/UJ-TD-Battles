@@ -20,30 +20,27 @@ Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
 
     switch (type) {
     case 0: //pierwszy wrog
-        health = 1.0f;
+        health = 2.0f;
         demage = 1.0f;
         range = 400.0f;
-        accuracy = 1.0f;
         speed = 1.0f;
-        walkingSpeed = 200.0f;
+        walkingSpeed = 100.0f;
         break;
 
     case 1:
-        health = 1.0f;
+        health = 4.0f;
         demage = 2.0f;
-        range = 500.0f;
-        accuracy = 1.0f;
-        speed = 1.5f;
-        walkingSpeed = 100.0f;
+        range = 300.0f;
+        speed = 2.0f;
+        walkingSpeed = 200.0f;
         break;
     case 2:
 
-        health = 1.0f;
+        health = 5.0f;
         demage = 2.0f;
-        range = 500.0f;
-        accuracy = 1.0f;
-        speed = 2.0f;
-        walkingSpeed = 300.0f;
+        range = 600.0f;
+        speed = 1.5f;
+        walkingSpeed = 50.0f;
         break;
 
     }
@@ -129,10 +126,28 @@ void Enemy::setTarget(Shooter* newTarget) {
     else targetPos = { -10000.0f, -100.0f };
 }
 
+void Enemy::takeDamage(float dmg)
+{
+    if (health <= 0) return;
+
+    health -= dmg;
+    
+    if (health < 0)
+    {
+        health = 0;
+    }
+}
+
 //Gettery
 sf::Vector2f Enemy::getPosition() const {
     return sprite.getPosition();
 }
 Shooter* Enemy::getTarget() const {
     return target;
+}
+float Enemy::getHealth() const {
+    return health;
+}
+bool Enemy::isAlive() const {
+    return health > 0;
 }

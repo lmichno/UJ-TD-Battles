@@ -38,8 +38,11 @@ public:
 
     // Settery
     void setTarget(Shooter* newTarget);
+    void takeDamage(float dmg);
 
     // Gettery
     sf::Vector2f getPosition() const;
 	Shooter* getTarget() const;
+    float getHealth() const;
+    bool isAlive() const;
 };
