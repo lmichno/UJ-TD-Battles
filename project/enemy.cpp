@@ -6,54 +6,37 @@
 Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
     : sprite(texture) // sf::Sprite dla SFML 3.0> nie ma domyślnego kontruktora, więc musimy upewnić się, �e sprite dostanie teksturę zanim będziemy wykonywać na nim jakiekolwiek operacje
 {
+    sprite.setTextureRect(sf::IntRect({ 0, 0 }, { 16, 32 }));
+    sprite.setPosition({ 1280, randY });
+    sprite.setScale({ -2, 2 });
+
+    timeSinceLastFrame = 0.0f;
+    frameDuration = 0.2f; // Długość animacji w sekundach
+    currentFrame = 0;
+    totalFrames = 2;
+
+    target = shooter;
+    targetPos = shooter->getPosition();
+
     switch (type) {
     case 0: //pierwszy wrog
-        sprite.setPosition({ 1280, randY });
-        sprite.setScale({ -2, 2 });
-
-        timeSinceLastFrame = 0.0f;
-        frameDuration = 0.2f; // Długość animacji w sekundach
-        currentFrame = 0;
-        totalFrames = 2;
-
         health = 1.0f;
         demage = 1.0f;
         range = 400.0f;
         accuracy = 1.0f;
         speed = 1.0f;
         walkingSpeed = 200.0f;
-
-        target = shooter;
-        targetPos = shooter->getPosition();
         break;
 
     case 1:
-        sprite.setPosition({ 1280, randY });
-        sprite.setScale({ -2, 2 });
-
-        timeSinceLastFrame = 0.0f;
-        frameDuration = 0.2f; // Długość animacji w sekundach
-        currentFrame = 0;
-        totalFrames = 2;
-
         health = 1.0f;
         demage = 2.0f;
         range = 500.0f;
         accuracy = 1.0f;
         speed = 1.5f;
         walkingSpeed = 100.0f;
-
-        target = shooter;
-        targetPos = shooter->getPosition();
         break;
     case 2:
-        sprite.setPosition({ 1280, randY });
-        sprite.setScale({ -2, 2 });
-
-        timeSinceLastFrame = 0.0f;
-        frameDuration = 0.2f; // Długość animacji w sekundach
-        currentFrame = 0;
-        totalFrames = 2;
 
         health = 1.0f;
         demage = 2.0f;
@@ -61,9 +44,6 @@ Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
         accuracy = 1.0f;
         speed = 2.0f;
         walkingSpeed = 300.0f;
-
-        target = shooter;
-        targetPos = shooter->getPosition();
         break;
 
     }
