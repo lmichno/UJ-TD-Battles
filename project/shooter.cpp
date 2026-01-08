@@ -67,7 +67,6 @@ void Shooter::takeDamage(float dmg) {
     if (health <= 0) return;
 
     health -= dmg;
-    std::cout << "Shooter took " << dmg << " damage, health now: " << health << std::endl;
     
     // Zabezpieczenie przed ujemnym życiem i wielokrotnym notify
     if (health <= 0) {

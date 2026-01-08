@@ -133,16 +133,10 @@ int main()
 
 
     // Operacje wstępne
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < 3; i++)
     {
         shooters.push_back(std::make_unique<Shooter>(jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f)));
     }
-    /*for (int i = 0; i < 2; i++)
-    {
-        int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
-        enemies.push_back(std::make_unique<Enemy>(ludzik, randFloat(0.f, 656.0f), shooters[randomT].get(),0));
-        shooters[randomT]->addEnemy(enemies.back().get());
-    }*/
 
 
     //TEMP
