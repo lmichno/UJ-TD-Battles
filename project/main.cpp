@@ -28,6 +28,7 @@ int main()
     std::vector<std::unique_ptr<Enemy>> enemies; //
     int money = 100;
     int moneyAdd = 15;
+	float moneyTimer = 0.0f;
 
     //Linia przegranej
     const float gameOverLineX = 190.f;
@@ -225,6 +226,15 @@ int main()
         float dt = deltaTime.asSeconds();
 
         float waveTime = waveClock.getElapsedTime().asSeconds();
+
+        // Dodawanie pieniędzy co sekundę (korzysta z dt, stabilne przy zmiennym FPS)
+        moneyTimer += dt;
+        while (moneyTimer >= 1.0f)
+        {
+            money += moneyAdd;
+            moneyTimer -= 1.0f;
+        }
+        kasa.setString(std::to_string(money));
 
         //FALA 1 
         if (currentWave == 1)
@@ -706,7 +716,9 @@ int main()
                     shooters[r]->addEnemy(enemies.back().get());
                 }
             }
-            }
+        }
+
+
 
 
 
