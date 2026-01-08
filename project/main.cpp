@@ -29,6 +29,10 @@ int main()
     int money = 100;
     int moneyAdd = 15;
 
+    //Linia przegranej
+    const float gameOverLineX = 190.f;
+    bool gameOver = false;
+
     int currentWave = 1;
 
     //Pierwsza fala wrogów
@@ -114,9 +118,11 @@ int main()
     jaguar4Cost.setString("120");
     jaguar4Cost.setPosition({ 15, 540 });
     //BOCZNY PANEL--------------------------
-
+    
     // Tekstury
     sf::Texture jaguar1("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
+    sf::Texture jaguar2("wrog2.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
+    sf::Texture jaguar3("wrog3.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
     sf::Texture ludzik("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
     sf::Texture ludzik2("wrog2.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
     sf::Texture ludzik3("wrog3.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
@@ -154,6 +160,21 @@ int main()
 
     while (window.isOpen()) // Główna pętla aplikacji
     {
+        if (gameOver)
+        {
+            window.clear(sf::Color::Black);
+
+            sf::Text gameOverText(mediumGothic);
+            gameOverText.setString("GAME OVER");
+            gameOverText.setCharacterSize(72);
+            gameOverText.setFillColor(sf::Color::Red);
+            gameOverText.setPosition({ 400, 300 });
+
+            window.draw(gameOverText);
+            window.display();
+            continue;
+        }
+
         while (const std::optional event = window.pollEvent()) // Sprawdzanie eventów
         {
             if (event->is<sf::Event::Closed>()) // Obsługa zamknięcia okna
@@ -179,8 +200,26 @@ int main()
                 {
                     shooters.push_back(std::make_unique<Shooter>(jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f)));
                 }
-                jaguar2Button.onClicked(money);
-                jaguar3Button.onClicked(money);
+                
+                if (jaguar2Button.onClicked(money))
+                {
+                    shooters.push_back(std::make_unique<Shooter>(
+                        jaguar2,
+                        randFloat(130.f, 170.f),
+                        randFloat(0.f, 656.0f)
+                    ));
+                }
+
+                if (jaguar3Button.onClicked(money))
+                {
+                    shooters.push_back(std::make_unique<Shooter>(
+                        jaguar3,
+                        randFloat(130.f, 170.f),
+                        randFloat(0.f, 656.0f)
+                    ));
+                }
+
+              
                 jaguar4Button.onClicked(money);
 
                 kasa.setString(std::to_string(money));
@@ -714,6 +753,29 @@ int main()
                 }
             }
             enemy->update(dt);
+
+            //GAME OVER CHECK
+            if (enemy->getPosition().x < gameOverLineX)
+            {
+                gameOver = true;
+                break;
+            }
+        }
+
+        if (gameOver)
+        {
+            window.clear(sf::Color::Black);
+
+            sf::Text gameOverText(mediumGothic);
+            gameOverText.setString("GAME OVER");
+            gameOverText.setCharacterSize(72);
+            gameOverText.setFillColor(sf::Color::Red);
+            gameOverText.setPosition({ 400, 300 });
+
+            window.draw(gameOverText);
+            window.display();
+
+            continue; // zatrzymuje dalszą logikę gry
         }
 
         // Draw
