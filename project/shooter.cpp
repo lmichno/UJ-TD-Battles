@@ -41,7 +41,7 @@ void Shooter::notifyEnemies() {
         if (enemy) enemy->setTarget(nullptr); // Ustawienie celu na nullptr gdy shooter jest martwy
     }
 
-enemies.clear(); // Wyczyszczenie listy wrogów
+    enemies.clear(); // Wyczyszczenie listy wrogów
 }
 
 void Shooter::shoot(Enemy* target, const sf::Texture& bulletTexture)
@@ -161,8 +161,19 @@ void Shooter::setTarget(sf::Vector2f newTarget) {
     target = newTarget;
 }
 void Shooter::addEnemy(Enemy* enemy) {
+    // Unikanie duplikatów
+    if (!enemy) return;
+    for (auto e : enemies) {
+        if (e == enemy) return;
+    }
     enemies.push_back(enemy);
 }
+
+void Shooter::removeEnemy(Enemy* enemy) {
+    if (!enemy) return;
+    enemies.erase(std::remove(enemies.begin(), enemies.end(), enemy), enemies.end());
+}
+
 void Shooter::takeDamage(float dmg) {
     // Sprawdzenie czy shooter już nie żyje
     if (health <= 0) return;

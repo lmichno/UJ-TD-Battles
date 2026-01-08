@@ -121,8 +121,12 @@ void Enemy::draw(sf::RenderWindow& window) {
 
 //Settery
 void Enemy::setTarget(Shooter* newTarget) {
+    if (target != nullptr && target != newTarget) {
+        target->removeEnemy(this);
+    }
+
     target = newTarget;
-    if (newTarget != nullptr)targetPos = newTarget->getPosition();
+    if (newTarget != nullptr) targetPos = newTarget->getPosition();
     else targetPos = { -10000.0f, -100.0f };
 }
 
