@@ -161,17 +161,7 @@ void Shooter::setTarget(sf::Vector2f newTarget) {
     target = newTarget;
 }
 void Shooter::addEnemy(Enemy* enemy) {
-    // Unikanie duplikatów
-    if (!enemy) return;
-    for (auto e : enemies) {
-        if (e == enemy) return;
-    }
     enemies.push_back(enemy);
-}
-
-void Shooter::removeEnemy(Enemy* enemy) {
-    if (!enemy) return;
-    enemies.erase(std::remove(enemies.begin(), enemies.end(), enemy), enemies.end());
 }
 
 void Shooter::takeDamage(float dmg) {

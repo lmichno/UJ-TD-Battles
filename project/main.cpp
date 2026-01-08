@@ -777,19 +777,6 @@ int main()
         }
 
         // Usuwanie martwych wrogów
-        std::vector<Enemy*> deadEnemies;
-        for (const auto& e : enemies) {
-            if (!e->isAlive()) deadEnemies.push_back(e.get());
-        }
-
-        if (!deadEnemies.empty()) {
-            for (auto& s : shooters) {
-                for (Enemy* de : deadEnemies) {
-                    s->removeEnemy(de);
-                }
-            }
-        }
-
         auto enemyIt = std::remove_if(enemies.begin(), enemies.end(), [](const auto& e) {
             return !e->isAlive();
             });

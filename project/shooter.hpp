@@ -52,7 +52,6 @@ public:
     // Settery
     void setTarget(sf::Vector2f newTarget);
     void addEnemy(Enemy* enemy);
-    void removeEnemy(Enemy* enemy);
 	void takeDamage(float dmg);
 
     // Gettery
