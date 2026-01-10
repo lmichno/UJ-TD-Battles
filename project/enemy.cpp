@@ -84,7 +84,7 @@ void Enemy::update(float dt) {
 
             if (currentFrame >= totalFrames) currentFrame = 0; // Powrót do pierwszej ramki
 
-            sprite.setTextureRect(sf::IntRect({ currentFrame * 16, 0 }, { 16, 32 })); // Kolejne klatki
+            sprite.setTextureRect(sf::IntRect({ currentFrame * 32, 0 }, { 32, 64 })); // Kolejne klatki
 
             timeSinceLastFrame -= frameDuration;
         }
@@ -96,7 +96,7 @@ void Enemy::update(float dt) {
             timeSinceLastFrame += dt;
 
 
-            sprite.setTextureRect(sf::IntRect({ 0, 32 }, { 16, 32 }));
+            sprite.setTextureRect(sf::IntRect({ 0, 64 }, { 32, 64 }));
 
             if (timeSinceLastFrame >= speed)
             {
@@ -104,7 +104,7 @@ void Enemy::update(float dt) {
                 currentFrame = 1;
                 timeSinceLastFrame = 0.0f;
 
-                sprite.setTextureRect(sf::IntRect({ currentFrame * 16, 32 }, { 16, 32 }));
+                sprite.setTextureRect(sf::IntRect({ currentFrame * 32, 64 }, { 32, 64 }));
 
                 if (target != nullptr) target->takeDamage(demage);
 				else targetPos = { -10000.0f, -100.0f };
@@ -115,14 +115,14 @@ void Enemy::update(float dt) {
         {
             timeSinceLastFrame += dt;
 
-            sprite.setTextureRect(sf::IntRect({ currentFrame * 16, 32 }, { 16, 32 }));
+            sprite.setTextureRect(sf::IntRect({ currentFrame * 32, 64 }, { 32, 64 }));
 
             if (timeSinceLastFrame >= frameDuration)
             {
                 currentFrame = 0;
                 timeSinceLastFrame = 0.0f;
 
-                sprite.setTextureRect(sf::IntRect({ 0, 32 }, { 16, 32 }));
+                sprite.setTextureRect(sf::IntRect({ 0, 64 }, { 32, 64 }));
             }
         }
         else
@@ -130,7 +130,7 @@ void Enemy::update(float dt) {
             // zabezpieczenie
             currentFrame = 0;
             timeSinceLastFrame = 0.0f;
-            sprite.setTextureRect(sf::IntRect({ 0, 32 }, { 16, 32 }));
+            sprite.setTextureRect(sf::IntRect({ 0, 64 }, { 32, 64 }));
         }
     }
 }

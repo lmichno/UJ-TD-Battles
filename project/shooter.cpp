@@ -43,7 +43,7 @@ void Shooter::update(float dt) {
 
         if (currentFrame >= totalFrames) currentFrame = 0; // Powrót do pierwszej ramki
 
-        sprite.setTextureRect(sf::IntRect({ currentFrame * 16, 0 }, { 16, 32 })); // Kolejne klatki
+        sprite.setTextureRect(sf::IntRect({ currentFrame * 32, 0 }, { 32, 64 })); // Kolejne klatki
 
         timeSinceLastFrame -= frameDuration;
     }

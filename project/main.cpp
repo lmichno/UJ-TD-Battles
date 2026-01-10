@@ -81,8 +81,8 @@ int main()
     //BOCZNY PANEL--------------------------
 
     // Tekstury
-    sf::Texture jaguar1("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
-    sf::Texture ludzik("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
+    sf::Texture jaguar1("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 64, 128 }));
+    sf::Texture ludzik("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 64, 128 }));
     sf::Texture ludzik2("wrog2.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
     sf::Texture ludzik3("wrog3.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
     sf::Texture sidePanel("sidePanel.png");
