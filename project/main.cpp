@@ -8,6 +8,7 @@
 #include "enemy.hpp"
 #include "button.hpp"
 #include "bullet.hpp"
+#include "menu.hpp"
 
 std::mt19937 rng(std::random_device{}()); // Globalny generator losowy
 
@@ -15,9 +16,16 @@ float randFloat(float a, float b);
 int randInt(int a, int b);
 
 int main()
+
 {
     // Główne operacje
     sf::RenderWindow window(sf::VideoMode({ 1280, 720 }), "UJ TD 1"); // Utworzenie okna
+
+    MenuResult result = showMenu(window);
+    int lvl = result.lvl;
+    int difficulty = result.difficulty;
+    sf::sleep(sf::milliseconds(150)); // odzyskanie focusa
+    window.requestFocus();
 
     sf::Clock clock; // Zegar do deltaTime
 
@@ -29,7 +37,7 @@ int main()
     std::vector<std::unique_ptr<Enemy>> enemies; //
     int money = 0;
     int moneyAdd = 5;
-	float moneyTimer = 0.0f;
+    float moneyTimer = 0.0f;
 
     //Linia przegranej
     const float gameOverLineX = 190.f;
@@ -197,7 +205,7 @@ int main()
                 {
                     shooters.push_back(std::make_unique<Shooter>(jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f)));
                 }
-                
+
                 if (jaguar2Button.onClicked(money))
                 {
                     shooters.push_back(std::make_unique<Shooter>(
@@ -216,7 +224,7 @@ int main()
                     ));
                 }
 
-              
+
                 jaguar4Button.onClicked(money);
 
                 kasa.setString(std::to_string(money));
@@ -295,7 +303,7 @@ int main()
                     lastEnemySpawnTime2 = waveTime;
 
                     // SPAWN 2 WROGÓW
-                    
+
                     if (!shooters.empty())
                     {
                         int randomT1 = randInt(0, static_cast<int>(shooters.size() - 1));
@@ -318,13 +326,13 @@ int main()
                 lastEnemySpawnTime3 = -2.0f;
             }
         }
-        
+
         // FALA 3
         else if (currentWave == 3)
         {
             if (shooters.empty())
                 continue;
-            
+
             if (waveTime < wave3Duration)
             {
                 // ---- OKNA CZASOWE ----
@@ -376,7 +384,7 @@ int main()
                         shooters[randomT]->addEnemy(enemies.back().get());
                     }
 
-                    
+
                 }
 
                 // 6 wrogów co 1 sekundę
@@ -447,7 +455,7 @@ int main()
                 currentWave = 4;
                 waveClock.restart();
                 lastEnemySpawnTime4 = -2.0f;
-                continue; 
+                continue;
             }
         }
 
@@ -496,7 +504,7 @@ int main()
                         shooters[r]->addEnemy(enemies.back().get());
                     }
 
-                    for (int i = 0; i < 3;i++)
+                    for (int i = 0; i < 3; i++)
                     {
                         int r = randInt(0, shooters.size() - 1);
                         enemies.push_back(std::make_unique<Enemy>(
@@ -535,7 +543,7 @@ int main()
                     continue;
                 }
             }
-}
+        }
 
         //FALA 5
         else if (currentWave == 5)
@@ -586,9 +594,9 @@ int main()
                 lastEnemySpawnTime6 = -2.0f;
                 continue;
             }
-            }
+        }
 
-       //FALA 6
+        //FALA 6
         else if (currentWave == 6)
         {
             if (shooters.empty())
@@ -616,7 +624,7 @@ int main()
                         ludzik2, randFloat(0, 656), shooters[r].get(), 1));
                     shooters[r]->addEnemy(enemies.back().get());
                 }
-          
+
 
             }
             else
@@ -626,15 +634,15 @@ int main()
                 lastEnemySpawnTime7 = -1.0f;
             }
 
-}
+        }
 
-//FALA 7
+        //FALA 7
         else if (currentWave == 7)
         {
             if (shooters.empty())
                 continue;
 
-            
+
             if (waveTime >= wave7Duration)
                 continue;
 
@@ -736,14 +744,14 @@ int main()
         // Update Shooterów
         for (auto& shooter : shooters) {
             shooter->update(dt);
-            
+
             // Shooterzy szukają i strzelają do dowolnego wroga w zasięgu
             Enemy* target = shooter->findNearestEnemy(enemies);
             if (target != nullptr)
             {
                 shooter->shoot(target, bullet);
             }
-            
+
             // Aktualizuj pociski dla każdego shootera
             shooter->updateBullets(dt, enemies);
         }
@@ -770,7 +778,7 @@ int main()
             //GAME OVER CHECK
             if (enemy->getPosition().x < gameOverLineX)
             {
-				std::cout << "GAME OVER!" << std::endl;
+                std::cout << "GAME OVER!" << std::endl;
                 gameOver = true;
                 break;
             }
