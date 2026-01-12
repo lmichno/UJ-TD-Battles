@@ -47,7 +47,7 @@ MenuResult showMenu(sf::RenderWindow& window)
             ));
         }
 
-        // Tytuł nad DIF, wyrównany z górnym
+        // Tytuł 
         sf::Text difTitle(font);
         difTitle.setString("WYBIERZ POZIOM TRUDNOSCI:");
         difTitle.setCharacterSize(static_cast<unsigned>(h * 0.045f));
@@ -171,7 +171,6 @@ MenuResult showMenu(sf::RenderWindow& window)
             }
         }
 
-        // RYSOWANIE
         window.clear(sf::Color::Black);
         window.draw(title);
         window.draw(difTitle);
