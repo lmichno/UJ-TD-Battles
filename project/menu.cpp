@@ -41,10 +41,7 @@ MenuResult showMenu(sf::RenderWindow& window)
         title.setFillColor(sf::Color::White);
         {
             sf::FloatRect bounds = title.getLocalBounds();
-            title.setPosition(sf::Vector2f(
-                w * 0.5f - bounds.size.x * 0.5f,
-                h * 0.08f
-            ));
+            title.setPosition(sf::Vector2f(w * 0.5f - bounds.size.x * 0.5f,h * 0.08f));
         }
 
         // Tytuł 
@@ -54,10 +51,7 @@ MenuResult showMenu(sf::RenderWindow& window)
         difTitle.setFillColor(sf::Color::White);
         {
             sf::FloatRect bounds = difTitle.getLocalBounds();
-            difTitle.setPosition(sf::Vector2f(
-                w * 0.5f - bounds.size.x * 0.5f,
-                lvlY + tileH + 10.0f
-            ));
+            difTitle.setPosition(sf::Vector2f( w * 0.5f - bounds.size.x * 0.5f,lvlY + tileH + 10.0f));
         }
 
         std::vector<sf::RectangleShape> lvlButtons;
@@ -86,11 +80,7 @@ MenuResult showMenu(sf::RenderWindow& window)
             txt.setString("LVL " + std::to_string(i + 1));
             txt.setCharacterSize(static_cast<unsigned>(tileH * 0.4f));
             txt.setFillColor(sf::Color::White);
-            txt.setPosition(sf::Vector2f(
-                x + tileW * 0.25f,
-                lvlY + tileH * 0.25f
-            ));
-
+            txt.setPosition(sf::Vector2f(x + tileW * 0.25f,lvlY + tileH * 0.25f));
             lvlTexts.push_back(txt);
         }
 
@@ -107,7 +97,7 @@ MenuResult showMenu(sf::RenderWindow& window)
                 col = sf::Color::Green;
             if (rect.getGlobalBounds().contains(mouse))
                 col = sf::Color(0, 120, 0);
-            rect.setFillColor(col);
+             rect.setFillColor(col);
 
             diffButtons.push_back(rect);
 
@@ -115,20 +105,13 @@ MenuResult showMenu(sf::RenderWindow& window)
             txt.setString("DIF " + std::to_string(i + 1));
             txt.setCharacterSize(static_cast<unsigned>(tileH * 0.4f));
             txt.setFillColor(sf::Color::White);
-            txt.setPosition(sf::Vector2f(
-                x + tileW * 0.25f,
-                difY + tileH * 0.25f
-            ));
-
+            txt.setPosition(sf::Vector2f(x + tileW * 0.25f,difY + tileH * 0.25f));
             diffTexts.push_back(txt);
         }
 
-        // Przycisk PLAY
+        // PLAY
         sf::RectangleShape play(sf::Vector2f(tileW * 1.5f, tileH));
-        play.setPosition(sf::Vector2f(
-            w * 0.5f - play.getSize().x * 0.5f,
-            playY
-        ));
+        play.setPosition(sf::Vector2f(w * 0.5f - play.getSize().x * 1.2f,playY));
         play.setFillColor(sf::Color(200, 200, 50));
         if (play.getGlobalBounds().contains(mouse))
             play.setFillColor(sf::Color(180, 180, 30));
@@ -139,8 +122,23 @@ MenuResult showMenu(sf::RenderWindow& window)
         playTxt.setFillColor(sf::Color::Black);
         playTxt.setPosition(sf::Vector2f(
             play.getPosition().x + play.getSize().x * 0.3f,
-            play.getPosition().y + tileH * 0.25f
-        ));
+            play.getPosition().y + tileH * 0.25f));
+
+        // EXIT
+        sf::RectangleShape exitBtn(sf::Vector2f(tileW * 1.5f, tileH));
+        exitBtn.setPosition(sf::Vector2f(
+            w * 0.5f + play.getSize().x * 0.2f,playY ));
+        exitBtn.setFillColor(sf::Color(200, 80, 80));
+        if (exitBtn.getGlobalBounds().contains(mouse))
+            exitBtn.setFillColor(sf::Color(170, 50, 50));
+
+        sf::Text exitTxt(font);
+        exitTxt.setString("EXIT");
+        exitTxt.setCharacterSize(static_cast<unsigned>(tileH * 0.45f));
+        exitTxt.setFillColor(sf::Color::Black);
+        exitTxt.setPosition(sf::Vector2f(
+        exitBtn.getPosition().x + exitBtn.getSize().x * 0.3f, exitBtn.getPosition().y + tileH * 0.25f));
+
 
         // EVENTY
         while (const std::optional ev = window.pollEvent())
@@ -150,9 +148,12 @@ MenuResult showMenu(sf::RenderWindow& window)
 
             if (const auto* m = ev->getIf<sf::Event::MouseButtonPressed>())
             {
-                sf::Vector2f click = window.mapPixelToCoords(
-                    sf::Vector2i(m->position.x, m->position.y)
-                );
+
+                sf::Vector2f click = window.mapPixelToCoords( sf::Vector2i(m->position.x, m->position.y) );
+                if (exitBtn.getGlobalBounds().contains(click))
+                {
+                    window.close();
+                }
 
                 for (int i = 0; i < 3; ++i)
                 {
@@ -185,6 +186,8 @@ MenuResult showMenu(sf::RenderWindow& window)
 
         window.draw(play);
         window.draw(playTxt);
+        window.draw(exitBtn);
+        window.draw(exitTxt);
         window.display();
     }
 
