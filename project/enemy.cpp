@@ -64,8 +64,26 @@ Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
 
         target = shooter;
         targetPos = shooter->getPosition();
-        break;
+        break; 
+    case 3: 
+          sprite.setPosition({ 1280, randY });
+          sprite.setScale({ -2.5f, 2.5f });
 
+          timeSinceLastFrame = 0.0f;
+          frameDuration = 0.2f; // Długość animacji w sekundach
+          currentFrame = 0;
+          totalFrames = 2;
+
+          health = 1.0f;
+          demage = 2.5f;
+          range = 600.0f;
+          accuracy = 1.0f;
+          speed = 2.0f;
+          walkingSpeed = 200.0f;
+
+          target = shooter;
+          targetPos = shooter->getPosition();
+          break;
     }
 }
 
