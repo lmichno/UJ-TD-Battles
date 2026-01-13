@@ -2,6 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
+extern float globalDificulty;
+void HordMode(int dif);
+
 class Shooter;
 
 class Enemy

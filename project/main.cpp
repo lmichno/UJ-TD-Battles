@@ -25,7 +25,7 @@ int main()
         MenuResult result = showMenu(window);
         int lvl = result.lvl;
         int difficulty = result.difficulty;
-
+        HordMode(difficulty);
         sf::sleep(sf::milliseconds(150));
         window.requestFocus();
 
