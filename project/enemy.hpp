@@ -30,7 +30,7 @@ public:
     Enemy(const sf::Texture& texture, float randY, Shooter* shooter, int type);
 
     // Funkcje
-
+    //asdsad
     // Renderowanie
     void update(float dt);
 
