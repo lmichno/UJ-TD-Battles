@@ -37,6 +37,7 @@ public:
     Shooter(const sf::Texture& texture, float randX, float randY);
 
     // Funkcje
+    void cleanupEnemies();
 
     void notifyEnemies();
     void shoot(Enemy* target, const sf::Texture& bulletTexture);

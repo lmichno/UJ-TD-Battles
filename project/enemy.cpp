@@ -35,7 +35,7 @@ Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
     case 0: //pierwszy wrog
         health = 2.0f * globalDificulty;
         demage = 1.0f * globalDificulty;
-        range = 400.0f * globalDificulty;
+        range = 400.0f;
         speed = 1.0f * globalDificulty;
         walkingSpeed = 100.0f * globalDificulty;
         break;
@@ -43,7 +43,7 @@ Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
     case 1:
         health = 4.0f * globalDificulty;
         demage = 2.0f * globalDificulty;
-        range = 300.0f * globalDificulty;
+        range = 300.0f;
         speed = 2.0f * globalDificulty;
         walkingSpeed = 200.0f * globalDificulty;
         break;
@@ -51,7 +51,7 @@ Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
 
         health = 5.0f * globalDificulty;
         demage = 2.0f * globalDificulty;
-        range = 600.0f * globalDificulty;
+        range = 600.0f;
         speed = 1.5f * globalDificulty;
         walkingSpeed = 50.0f * globalDificulty;
         break;

@@ -245,6 +245,7 @@ int main()
                     //PRZEJŚCIE DO FALI 2
                     currentWave = 2;
                     waveClock.restart();
+                    waveText.setString("FALA 2");
                     lastEnemySpawnTime2 = -3.0f;
                 }
             }
@@ -252,10 +253,6 @@ int main()
             // FALA 2 
             else if (currentWave == 2)
             {
-                waveClock.restart();
-                waveText.setString("FALA 2");
-
-
                 if (waveTime < wave2Duration)
                 {
                     float currentSpawnInterval;
@@ -292,6 +289,7 @@ int main()
                 {
                     currentWave = 3;
                     waveClock.restart();
+                    waveText.setString("FALA 3");
                     lastEnemySpawnTime3 = -2.0f;
                 }
             }
@@ -299,8 +297,6 @@ int main()
             // FALA 3
             else if (currentWave == 3)
             {
-                waveClock.restart();
-                waveText.setString("FALA 3");
                 if (shooters.empty())
                     continue;
 
@@ -425,6 +421,7 @@ int main()
                 {
                     currentWave = 4;
                     waveClock.restart();
+                    waveText.setString("FALA 4");
                     lastEnemySpawnTime4 = -2.0f;
                     continue;
                 }
@@ -433,8 +430,6 @@ int main()
             //FALA 4
             else if (currentWave == 4)
             {
-                waveClock.restart();
-                waveText.setString("FALA 4");
                 if (shooters.empty())
                     continue;
 
@@ -512,6 +507,7 @@ int main()
                     {
                         currentWave = 5;
                         waveClock.restart();
+                        waveText.setString("FALA 5");
                         lastEnemySpawnTime5 = -2.0f;
                         continue;
                     }
@@ -521,8 +517,6 @@ int main()
             //FALA 5
             else if (currentWave == 5)
             {
-                waveClock.restart();
-                waveText.setString("FALA 5");
                 if (shooters.empty())
                     continue;
 
@@ -566,6 +560,7 @@ int main()
                 {
                     currentWave = 6;
                     waveClock.restart();
+                    waveText.setString("FALA 6");
                     lastEnemySpawnTime6 = -2.0f;
                     continue;
                 }
@@ -574,8 +569,6 @@ int main()
             //FALA 6
             else if (currentWave == 6)
             {
-                waveClock.restart();
-                waveText.setString("FALA 6");
                 if (shooters.empty())
                     continue;
 
@@ -608,6 +601,7 @@ int main()
                 {
                     currentWave = 7;
                     waveClock.restart();
+                    waveText.setString("FALA 7");
                     lastEnemySpawnTime7 = -1.0f;
                 }
 
@@ -616,8 +610,6 @@ int main()
             //FALA 7
             else if (currentWave == 7)
             {
-                waveClock.restart();
-                waveText.setString("FALA 7");
                 if (shooters.empty())
                     continue;
 
@@ -758,6 +750,9 @@ int main()
                 std::remove_if(enemies.begin(), enemies.end(),
                     [](const auto& e) { return !e->isAlive(); }),
                 enemies.end());
+            for (auto& shooter : shooters)
+                shooter->cleanupEnemies();
+
 
             //RYSOWANIE
 
