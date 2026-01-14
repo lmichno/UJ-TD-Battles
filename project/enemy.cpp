@@ -9,7 +9,7 @@ Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
     switch (type) {
     case 0: //pierwszy wrog
         sprite.setPosition({ 1280, randY });
-        sprite.setScale({ -2, 2 });
+        sprite.setScale({ -1.5f, 1.5f });
 
         timeSinceLastFrame = 0.0f;
         frameDuration = 0.2f; // Długość animacji w sekundach
@@ -29,7 +29,7 @@ Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
 
     case 1:
         sprite.setPosition({ 1280, randY });
-        sprite.setScale({ -2, 2 });
+        sprite.setScale({ -1.5f, 1.5f });
 
         timeSinceLastFrame = 0.0f;
         frameDuration = 0.2f; // Długość animacji w sekundach
@@ -48,7 +48,7 @@ Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
         break;
     case 2:
         sprite.setPosition({ 1280, randY });
-        sprite.setScale({ -2, 2 });
+        sprite.setScale({ -1.5f, 1.5f });
 
         timeSinceLastFrame = 0.0f;
         frameDuration = 0.2f; // Długość animacji w sekundach

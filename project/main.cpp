@@ -82,18 +82,18 @@ int main()
 
     // Tekstury
     sf::Texture jaguar1("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 64, 128 }));
-    sf::Texture ludzik("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 64, 128 }));
-    sf::Texture ludzik2("wrog2.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
-    sf::Texture ludzik3("wrog3.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
+    sf::Texture jaguar2("jaguar2.png", false, sf::IntRect({ 0, 0 }, { 64, 128 }));
+    sf::Texture jaguar3("jaguar3.png", false, sf::IntRect({ 0, 0 }, { 64, 128 }));
+    sf::Texture jaguar4("jaguar4.png", false, sf::IntRect({ 0, 0 }, { 64, 128 }));
+    sf::Texture ludzik("wrog1.png", false, sf::IntRect({ 0, 0 }, { 64, 128 }));
+    sf::Texture ludzik2("wrog2.png", false, sf::IntRect({ 0, 0 }, { 64, 128 }));
+    sf::Texture ludzik3("wrog3.png", false, sf::IntRect({ 0, 0 }, { 64, 128 }));
     sf::Texture sidePanel("sidePanel.png");
     sf::Texture backgroundTexture;
-backgroundTexture.loadFromFile("background.png");
+    backgroundTexture.loadFromFile("background.png");
 
-sf::Sprite backgroundSprite(backgroundTexture);
-backgroundSprite.setScale({
-    1280.f / backgroundTexture.getSize().x,
-    720.f / backgroundTexture.getSize().y
-    });
+    sf::Sprite backgroundSprite(backgroundTexture);
+    backgroundSprite.setScale({1280.f / backgroundTexture.getSize().x,720.f / backgroundTexture.getSize().y});
 
 
     //Sprite
