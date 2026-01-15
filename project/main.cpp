@@ -20,94 +20,6 @@ int main()
     // Główne operacje
     sf::RenderWindow window(sf::VideoMode({ 1280, 720 }), "UJ TD 1"); // Utworzenie okna
 
-    sf::Clock clock; // Zegar do deltaTime
-
-    window.setFramerateLimit(60); // Ustawienie 60fps
-
-    // Zmienne
-    // Używamy unique_ptr, aby adresy w pamięci były stałe (dla Enemy::target i Shooter::enemies)
-    std::vector<std::unique_ptr<Shooter>> shooters;
-    std::vector<std::unique_ptr<Enemy>> enemies; //
-    int money = 100;
-    int moneyAdd = 15;
-
-
-    //Fonty
-    sf::Font mediumGothic("ScienceGothic-Medium.ttf");
-
-    //BOCZNY PANEL--------------------------
-    // Przyciski
-    Button jaguar1Button(12, 115, 100, 125, 15); // x, y, width, height
-    Button jaguar2Button(12, 243, 100, 125, 30);
-    Button jaguar3Button(12, 371, 100, 125, 60);
-    Button jaguar4Button(12, 504, 100, 125, 120);
-
-    // Teksty
-    sf::Text text(mediumGothic);
-    text.setCharacterSize(18);
-    text.setFillColor(sf::Color::Black);
-
-    sf::Text kasa = text;
-    std::string moneyStr = std::to_string(money);
-    kasa.setString(moneyStr);
-    kasa.setFillColor(sf::Color::Yellow);
-    kasa.setOutlineThickness(1);
-    kasa.setOutlineColor(sf::Color::Black);
-    kasa.setPosition({ 20, 38 });
-
-    sf::Text zarobki = text;
-    std::string  moneyAddStr = std::to_string(moneyAdd) + " $/s";
-    zarobki.setString(moneyAddStr);
-    zarobki.setPosition({ 20, 85 });
-    zarobki.setFillColor(sf::Color::Green);
-    zarobki.setOutlineThickness(1);
-    zarobki.setOutlineColor(sf::Color::Black);
-
-    sf::Text jaguar1Cost = text;
-    jaguar1Cost.setCharacterSize(12);
-    jaguar1Cost.setFillColor(sf::Color::Yellow);
-    jaguar1Cost.setOutlineThickness(0.8f);
-
-    sf::Text jaguar2Cost = jaguar1Cost;
-    sf::Text jaguar3Cost = jaguar1Cost;
-    sf::Text jaguar4Cost = jaguar1Cost;
-
-    jaguar1Cost.setString("15");
-    jaguar1Cost.setPosition({ 15, 150 });
-    jaguar2Cost.setString("30");
-    jaguar2Cost.setPosition({ 15, 280 });
-    jaguar3Cost.setString("60");
-    jaguar3Cost.setPosition({ 15, 410 });
-    jaguar4Cost.setString("120");
-    jaguar4Cost.setPosition({ 15, 540 });
-    //BOCZNY PANEL--------------------------
-
-    // Tekstury
-    sf::Texture jaguar1("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 64, 128 }));
-    sf::Texture jaguar2("jaguar2.png", false, sf::IntRect({ 0, 0 }, { 64, 128 }));
-    sf::Texture jaguar3("jaguar3.png", false, sf::IntRect({ 0, 0 }, { 64, 128 }));
-    sf::Texture jaguar4("jaguar4.png", false, sf::IntRect({ 0, 0 }, { 64, 128 }));
-    sf::Texture ludzik("wrog1.png", false, sf::IntRect({ 0, 0 }, { 64, 128 }));
-    sf::Texture ludzik2("wrog2.png", false, sf::IntRect({ 0, 0 }, { 64, 128 }));
-    sf::Texture ludzik3("wrog3.png", false, sf::IntRect({ 0, 0 }, { 64, 128 }));
-    sf::Texture sidePanel("sidePanel.png");
-    sf::Texture backgroundTexture;
-    backgroundTexture.loadFromFile("background.png");
-
-    sf::Sprite backgroundSprite(backgroundTexture);
-    backgroundSprite.setScale({1280.f / backgroundTexture.getSize().x,720.f / backgroundTexture.getSize().y});
-
-
-    //Sprite
-    sf::Sprite sidePanelSprite(sidePanel);
-
-
-    // Operacje wstępne
-    for (int i = 0; i < 3; i++)
-    {
-        shooters.push_back(std::make_unique<Shooter>(jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f))); 
-    }
-
     while (window.isOpen()) 
     {
         //MENU 
@@ -215,12 +127,27 @@ int main()
         jaguar4Cost.setPosition({ 15, 540 });
 
         //TEKSTURY
-        sf::Texture jaguar1("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
-        sf::Texture jaguar2("wrog2.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
-        sf::Texture jaguar3("wrog3.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
-        sf::Texture ludzik("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
-        sf::Texture ludzik2("wrog2.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
-        sf::Texture ludzik3("wrog3.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
+        sf::Texture jaguar1("jaguar1.png");
+        sf::Texture jaguar2("jaguar2.png");
+        sf::Texture jaguar3("jaguar3.png");
+        sf::Texture jaguar4("jaguar4.png");
+        sf::Texture ludzik("wrog1.png");
+        sf::Texture ludzik2("wrog2.png");
+        sf::Texture ludzik3("wrog3.png");
+        sf::Texture backgroundTexture1;
+        backgroundTexture1.loadFromFile("background.png");
+        sf::Texture backgroundTexture2;
+        backgroundTexture2.loadFromFile("background1.png");
+        sf::Texture backgroundTexture3;
+        backgroundTexture3.loadFromFile("background2.png");
+
+        sf::Sprite backgroundSprite1(backgroundTexture1);
+        backgroundSprite1.setScale({ 1280.f / backgroundTexture1.getSize().x,720.f / backgroundTexture1.getSize().y });
+        sf::Sprite backgroundSprite2(backgroundTexture2);
+        backgroundSprite2.setScale({ 1280.f / backgroundTexture2.getSize().x,720.f / backgroundTexture2.getSize().y });
+        sf::Sprite backgroundSprite3(backgroundTexture1);
+        backgroundSprite3.setScale({ 1280.f / backgroundTexture3.getSize().x,720.f / backgroundTexture3.getSize().y });
+
         sf::Texture bullet("bullet.png", false, sf::IntRect({ 0, 0 }, { 26, 8 }));
         sf::Texture sidePanel("sidePanel.png");
 
@@ -845,12 +772,9 @@ int main()
 
             //RYSOWANIE
 
-
-            window.clear(sf::Color::White);
-
             mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
             
-            window.draw(backgroundSprite);
+            window.draw(backgroundSprite1);
             
             jaguar1Button.update(mousePos, money);
             jaguar2Button.update(mousePos, money);

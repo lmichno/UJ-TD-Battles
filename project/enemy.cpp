@@ -19,7 +19,7 @@ void HordMode(int dif) {
 Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
     : sprite(texture) // sf::Sprite dla SFML 3.0> nie ma domyślnego kontruktora, więc musimy upewnić się, �e sprite dostanie teksturę zanim będziemy wykonywać na nim jakiekolwiek operacje
 {
-    sprite.setTextureRect(sf::IntRect({ 0, 0 }, { 16, 32 }));
+    sprite.setTextureRect(sf::IntRect({ 0, 0 }, { 32, 64 }));
     sprite.setPosition({ 1280, randY });
 
     timeSinceLastFrame = 0.0f;
