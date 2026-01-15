@@ -754,6 +754,12 @@ int main()
                 }
 
                 enemy->update(dt);
+                
+                if (enemy->isReadyToShoot())
+                {
+                    enemy->shoot(bullet);
+                    enemy->resetReadyToShoot();
+                }
 
                 if (enemy->getPosition().x < gameOverLineX)
                 {
@@ -804,7 +810,10 @@ int main()
             }
 
             for (const auto& enemy : enemies)
+            {
                 enemy->draw(window);
+                enemy->drawBullets(window);
+            }
             //nazwa fali
             window.draw(waveText);
 
