@@ -30,7 +30,8 @@ Bullet::Bullet(const sf::Texture& texture, sf::Vector2f startPos, Enemy* target,
     }
     else
     {
-        direction = { 0.0f, 0.0f };
+        direction = { 1.0f, 0.0f };
+        sprite.setRotation(sf::degrees(0.0f));
     }
 }
 
@@ -106,7 +107,7 @@ bool Bullet::hasReachedTarget() const
         targetPos.x += 24.0f; 
         targetPos.y += 48.0f;
     } else {
-        return true;
+        return false;
     }
 
     sf::Vector2f bulletPos = getPosition();
@@ -121,9 +122,9 @@ bool Bullet::isAlive() const
 {
     // Pocisk martwy jesli jest poza oknem lub bez celu
     sf::Vector2f pos = getPosition();
-    bool hasTarget = (targetEnemy != nullptr || targetShooter != nullptr);
+    bool hasTarget = true; // Allow dumb-fire
     bool inWindow = pos.x > -50 && pos.x < 1330 && pos.y > -50 && pos.y < 770;
-    return inWindow && hasTarget;
+    return inWindow;
 }
 
 float Bullet::getDamage() const

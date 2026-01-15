@@ -240,10 +240,6 @@ void Shooter::update(float dt) {
                  if (targetForShot && bulletTextureRef)
                  {
                      sf::Vector2f sp = getPosition();
-                     // Check if target is still valid? 
-                     // We rely on removeEnemy cleaning up targetForShot if needed?
-                     // But we didn't implement logic to clear targetForShot in removeEnemy yet.
-                     // Let's rely on basic check or just fire.
                      
                       bullets.push_back(std::make_unique<Bullet>(
                         *bulletTextureRef,
