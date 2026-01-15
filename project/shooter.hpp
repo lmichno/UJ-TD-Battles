@@ -32,6 +32,11 @@ private:
     float shootCooldownTimer;
     float shootCooldownVariation; // Losowa zmiana cooldownu
 
+    // Animation specific
+    bool isShooting = false;
+    Enemy* targetForShot = nullptr;
+    const sf::Texture* bulletTextureRef = nullptr;
+
 public:
     // Konstruktor
     Shooter(const sf::Texture& texture, float randX, float randY, int type);

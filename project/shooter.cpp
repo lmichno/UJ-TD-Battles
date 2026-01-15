@@ -61,6 +61,10 @@ Shooter::Shooter(const sf::Texture& texture, float randX, float randY, int type)
 
     shootCooldownTimer = 0.0f;
     shootCooldownVariation = randFloat(0.7f, 1.3f); // Losowy offset: 0.5x do 1.5x normalnego cooldownu
+    
+    isShooting = false;
+    targetForShot = nullptr;
+    bulletTextureRef = nullptr;
 }
 
 Shooter::~Shooter() {
@@ -70,6 +74,9 @@ Shooter::~Shooter() {
 // Funkcje
 
 void Shooter::removeEnemy(Enemy* enemy) {
+    if (targetForShot == enemy)
+        targetForShot = nullptr;
+
     auto it = std::find(enemies.begin(), enemies.end(), enemy);
     if (it != enemies.end()) {
         enemies.erase(it);
@@ -86,7 +93,7 @@ void Shooter::notifyEnemies() {
 
 void Shooter::shoot(Enemy* target, const sf::Texture& bulletTexture)
 {
-    if (target == nullptr || shootCooldownTimer > 0.0f)
+    if (target == nullptr || shootCooldownTimer > 0.0f || isShooting)
         return;
 
     sf::Vector2f shooterPos = getPosition();
@@ -101,14 +108,18 @@ void Shooter::shoot(Enemy* target, const sf::Texture& bulletTexture)
     // Strzelaj tylko gdy cel jest w zasięgu
     if (distance <= range)
     {
-        bullets.push_back(std::make_unique<Bullet>(
-            bulletTexture,
-            shooterPos,
-            target,
-            1500.0f,  // prędkość pocisku
-            demage
-        ));
-        shootCooldownTimer = shootCooldown * shootCooldownVariation; // Losowy offset
+        // Start animation
+        isShooting = true;
+        targetForShot = target;
+        bulletTextureRef = &bulletTexture;
+        
+        currentFrame = 0;
+        timeSinceLastFrame = 0.0f;
+        
+        // Reset textures to attack row
+        sprite.setTextureRect(sf::IntRect({ 0, 64 }, { 32, 64 }));
+        
+        shootCooldownTimer = shootCooldown * shootCooldownVariation; 
     }
 }
 // czyszczenie wskaznikow
@@ -192,17 +203,71 @@ void Shooter::drawBullets(sf::RenderWindow& window)
 
 // Renderowanie
 void Shooter::update(float dt) {
-    timeSinceLastFrame += dt;
-
-    if (timeSinceLastFrame >= frameDuration)
+    if (!isShooting)
     {
-        currentFrame++; // Przejście do następnej ramki
+        // IDLE ANIMATION (Loop 0-1 at y=0)
+        timeSinceLastFrame += dt;
 
-        if (currentFrame >= totalFrames) currentFrame = 0; // Powrót do pierwszej ramki
+        if (timeSinceLastFrame >= frameDuration)
+        {
+            currentFrame++; 
+            if (currentFrame >= totalFrames) currentFrame = 0; 
 
-        sprite.setTextureRect(sf::IntRect({ currentFrame * 32, 0 }, { 32, 64 })); // Kolejne klatki
+            sprite.setTextureRect(sf::IntRect({ currentFrame * 32, 0 }, { 32, 64 })); 
 
-        timeSinceLastFrame -= frameDuration;
+            timeSinceLastFrame -= frameDuration;
+        }
+    }
+    else
+    {
+        // ATTACK ANIMATION (One-shot 0-1 at y=64)
+        timeSinceLastFrame += dt;
+
+        if (currentFrame == 0)
+        {
+            // Windup
+             sprite.setTextureRect(sf::IntRect({ 0, 64 }, { 32, 64 }));
+
+             if (timeSinceLastFrame >= 0.1f) // Fast windup
+             {
+                 currentFrame = 1;
+                 timeSinceLastFrame = 0.0f;
+                 
+                 // FIRE
+                 sprite.setTextureRect(sf::IntRect({ 32, 64 }, { 32, 64 }));
+                 
+                 // Create bullet
+                 if (targetForShot && bulletTextureRef)
+                 {
+                     sf::Vector2f sp = getPosition();
+                     // Check if target is still valid? 
+                     // We rely on removeEnemy cleaning up targetForShot if needed?
+                     // But we didn't implement logic to clear targetForShot in removeEnemy yet.
+                     // Let's rely on basic check or just fire.
+                     
+                      bullets.push_back(std::make_unique<Bullet>(
+                        *bulletTextureRef,
+                        sp,
+                        targetForShot,
+                        1500.0f,
+                        demage
+                    ));
+                 }
+             }
+        }
+        else if (currentFrame == 1)
+        {
+             sprite.setTextureRect(sf::IntRect({ 32, 64 }, { 32, 64 }));
+             
+             if (timeSinceLastFrame >= 0.1f) // Backswing
+             {
+                 isShooting = false;
+                 currentFrame = 0;
+                 timeSinceLastFrame = 0.0f;
+                 // Back to idle
+                 sprite.setTextureRect(sf::IntRect({ 0, 0 }, { 32, 64 }));
+             }
+        }
     }
 }
 
