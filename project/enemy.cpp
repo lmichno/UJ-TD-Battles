@@ -2,94 +2,80 @@
 #include "shooter.hpp"
 #include <iostream>
 
+float globalDificulty;
+void HordMode(int dif) {
+    switch (dif) { case 2: 
+        globalDificulty = 1.5f; 
+        break;
+    case 3: 
+        globalDificulty = 2.0f; 
+        break;
+    default: 
+        globalDificulty = 1.0f; }
+
+}
+
 // Konstruktor
 Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
     : sprite(texture) // sf::Sprite dla SFML 3.0> nie ma domyślnego kontruktora, więc musimy upewnić się, �e sprite dostanie teksturę zanim będziemy wykonywać na nim jakiekolwiek operacje
 {
+    sprite.setTextureRect(sf::IntRect({ 0, 0 }, { 16, 32 }));
+    sprite.setPosition({ 1280, randY });
+
+    timeSinceLastFrame = 0.0f;
+    frameDuration = 0.2f; // Długość animacji w sekundach
+    currentFrame = 0;
+    totalFrames = 2;
+
+    target = shooter;
+    targetPos = shooter->getPosition();
+
     switch (type) {
     case 0: //pierwszy wrog
-        sprite.setPosition({ 1280, randY });
         sprite.setScale({ -1.5f, 1.5f });
-
-        timeSinceLastFrame = 0.0f;
-        frameDuration = 0.2f; // Długość animacji w sekundach
-        currentFrame = 0;
-        totalFrames = 2;
-
-        health = 1.0f;
-        demage = 1.0f;
+        health = 2.0f * globalDificulty;
+        demage = 1.0f * globalDificulty;
         range = 400.0f;
-        accuracy = 1.0f;
-        speed = 1.0f;
-        walkingSpeed = 200.0f;
-
-        target = shooter;
-        targetPos = shooter->getPosition();
+        speed = 1.0f * globalDificulty;
+        walkingSpeed = 100.0f * globalDificulty;
         break;
 
     case 1:
-        sprite.setPosition({ 1280, randY });
         sprite.setScale({ -1.5f, 1.5f });
-
-        timeSinceLastFrame = 0.0f;
-        frameDuration = 0.2f; // Długość animacji w sekundach
-        currentFrame = 0;
-        totalFrames = 2;
-
-        health = 1.0f;
-        demage = 2.0f;
-        range = 500.0f;
-        accuracy = 1.0f;
-        speed = 1.5f;
-        walkingSpeed = 100.0f;
-
-        target = shooter;
-        targetPos = shooter->getPosition();
+        health = 4.0f * globalDificulty;
+        demage = 2.0f * globalDificulty;
+        range = 300.0f;
+        speed = 2.0f * globalDificulty;
+        walkingSpeed = 200.0f * globalDificulty;
         break;
+        
     case 2:
-        sprite.setPosition({ 1280, randY });
         sprite.setScale({ -1.5f, 1.5f });
+        health = 5.0f * globalDificulty;
+        demage = 2.0f * globalDificulty;
+        range = 600.0f;
+        speed = 1.5f * globalDificulty;
+        walkingSpeed = 50.0f * globalDificulty;
+        break;
+        
+    case 3:
+        sprite.setScale({ -2.5f, 2.5f });
+        health = 25.0f * globalDificulty;
+        demage = 5.0f * globalDificulty;
+        range = 300.0f;
+        speed = 1.0f * globalDificulty;
+        walkingSpeed = 25.0f * globalDificulty;
+        break;
 
-        timeSinceLastFrame = 0.0f;
-        frameDuration = 0.2f; // Długość animacji w sekundach
-        currentFrame = 0;
-        totalFrames = 2;
-
-        health = 1.0f;
-        demage = 2.0f;
-        range = 500.0f;
-        accuracy = 1.0f;
-        speed = 2.0f;
-        walkingSpeed = 300.0f;
-
-        target = shooter;
-        targetPos = shooter->getPosition();
-        break; 
-    case 3: 
-          sprite.setPosition({ 1280, randY });
-          sprite.setScale({ -2.5f, 2.5f });
-
-          timeSinceLastFrame = 0.0f;
-          frameDuration = 0.2f; // Długość animacji w sekundach
-          currentFrame = 0;
-          totalFrames = 2;
-
-          health = 1.0f;
-          demage = 2.5f;
-          range = 600.0f;
-          accuracy = 1.0f;
-          speed = 2.0f;
-          walkingSpeed = 200.0f;
-
-          target = shooter;
-          targetPos = shooter->getPosition();
-          break;
     }
 }
 
 //Funkcje
 void Enemy::update(float dt) {
 
+    if (target != nullptr)
+        targetPos = target->getPosition();
+    
     if (sprite.getPosition().x - targetPos.x > range || target == nullptr || targetPos.x < 0)
     {
         sprite.move({ -(walkingSpeed * dt), 0 });
@@ -160,14 +146,32 @@ void Enemy::draw(sf::RenderWindow& window) {
 //Settery
 void Enemy::setTarget(Shooter* newTarget) {
     target = newTarget;
-    if (newTarget != nullptr)targetPos = newTarget->getPosition();
+    if (newTarget != nullptr) targetPos = newTarget->getPosition();
     else targetPos = { -10000.0f, -100.0f };
 }
 
+void Enemy::takeDamage(float dmg)
+{
+    if (health <= 0) return;
+
+    health -= dmg;
+    
+    if (health < 0)
+    {
+        health = 0;
+    }
+}
+
 //Gettery
-sf::Vector2f Enemy::getPosition() {
+sf::Vector2f Enemy::getPosition() const {
     return sprite.getPosition();
 }
-Shooter* Enemy::getTarget() {
+Shooter* Enemy::getTarget() const {
     return target;
+}
+float Enemy::getHealth() const {
+    return health;
+}
+bool Enemy::isAlive() const {
+    return health > 0;
 }

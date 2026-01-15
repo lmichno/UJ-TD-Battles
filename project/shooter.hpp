@@ -1,8 +1,12 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <vector>
+#include <memory>
 #include "enemy.hpp"
 
+// Forward declaration
+class Bullet;
 
 class Shooter
 {
@@ -22,15 +26,24 @@ private:
 
     sf::Vector2f target;
     std::vector<Enemy*> enemies;
-
+    std::vector<std::unique_ptr<Bullet>> bullets;
+    
+    float shootCooldown;
+    float shootCooldownTimer;
+    float shootCooldownVariation; // Losowa zmiana cooldownu
 
 public:
     // Konstruktor
     Shooter(const sf::Texture& texture, float randX, float randY);
 
     // Funkcje
+    void cleanupEnemies();
 
     void notifyEnemies();
+    void shoot(Enemy* target, const sf::Texture& bulletTexture);
+    void updateBullets(float dt, std::vector<std::unique_ptr<Enemy>>& enemies);
+    void drawBullets(sf::RenderWindow& window);
+    Enemy* findNearestEnemy(std::vector<std::unique_ptr<Enemy>>& enemies);
 
     // Renderowanie
     void update(float dt);
