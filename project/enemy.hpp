@@ -39,6 +39,7 @@ private:
 public:
     // Konstruktor
     Enemy(const sf::Texture& texture, float randY, Shooter* shooter, int type);
+    ~Enemy();
 
     bool isReadyToShoot() const { return readyToShoot; }
     void resetReadyToShoot() { readyToShoot = false; }

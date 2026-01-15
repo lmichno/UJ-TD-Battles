@@ -40,8 +40,8 @@ Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
         health = 2.0f * globalDificulty;
         demage = 1.0f * globalDificulty;
         range = 400.0f;
-        speed = 1.0f * globalDificulty;
-        walkingSpeed = 100.0f * globalDificulty;
+        speed = 2.0f;
+        walkingSpeed = 100.0f;
         break;
 
     case 1:
@@ -49,8 +49,8 @@ Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
         health = 4.0f * globalDificulty;
         demage = 2.0f * globalDificulty;
         range = 300.0f;
-        speed = 2.0f * globalDificulty;
-        walkingSpeed = 200.0f * globalDificulty;
+        speed = 1.0f;
+        walkingSpeed = 200.0f;
         break;
         
     case 2:
@@ -58,8 +58,8 @@ Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
         health = 5.0f * globalDificulty;
         demage = 2.0f * globalDificulty;
         range = 600.0f;
-        speed = 1.5f * globalDificulty;
-        walkingSpeed = 50.0f * globalDificulty;
+        speed = 1.5f;
+        walkingSpeed = 50.0f;
         break;
         
     case 3:
@@ -67,10 +67,16 @@ Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
         health = 25.0f * globalDificulty;
         demage = 5.0f * globalDificulty;
         range = 300.0f;
-        speed = 1.0f * globalDificulty;
-        walkingSpeed = 25.0f * globalDificulty;
+        speed = 1.0f;
+        walkingSpeed = 25.0f;
         break;
 
+    }
+}
+
+Enemy::~Enemy() {
+    if (target) {
+        target->removeEnemy(this);
     }
 }
 

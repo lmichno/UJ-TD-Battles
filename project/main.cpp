@@ -37,7 +37,7 @@ int main()
         std::vector<std::unique_ptr<Shooter>> shooters;
         std::vector<std::unique_ptr<Enemy>> enemies;
 
-        int money = 0;
+        int money = 200;
         int moneyAdd = 5;
         float moneyTimer = 0.0f;
 
@@ -154,10 +154,10 @@ int main()
         sf::Sprite sidePanelSprite(sidePanel);
 
         //NA POCZATKU SHOOTERZY
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 0; i++)
         {
             shooters.push_back(std::make_unique<Shooter>(
-                jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f)));
+                jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f), 0));
         }
 
         sf::RectangleShape rectangle({ 5, 720 });
@@ -195,17 +195,19 @@ int main()
 
                     if (jaguar1Button.onClicked(money))
                         shooters.push_back(std::make_unique<Shooter>(
-                            jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f)));
+                            jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f), 0));
 
                     if (jaguar2Button.onClicked(money))
                         shooters.push_back(std::make_unique<Shooter>(
-                            jaguar2, randFloat(130.f, 170.f), randFloat(0.f, 656.0f)));
+                            jaguar2, randFloat(130.f, 170.f), randFloat(0.f, 656.0f), 1));
 
                     if (jaguar3Button.onClicked(money))
                         shooters.push_back(std::make_unique<Shooter>(
-                            jaguar3, randFloat(130.f, 170.f), randFloat(0.f, 656.0f)));
+                            jaguar3, randFloat(130.f, 170.f), randFloat(0.f, 656.0f), 2));
 
-                    jaguar4Button.onClicked(money);
+                    if (jaguar4Button.onClicked(money))
+                        shooters.push_back(std::make_unique<Shooter>(
+                            jaguar4, randFloat(130.f, 170.f), randFloat(0.f, 656.0f), 3));
 
                     kasa.setString(std::to_string(money));
                 }
@@ -768,12 +770,13 @@ int main()
                 }
             }
 
+            for (auto& shooter : shooters)
+                shooter->cleanupEnemies();
+
             enemies.erase(
                 std::remove_if(enemies.begin(), enemies.end(),
                     [](const auto& e) { return !e->isAlive(); }),
                 enemies.end());
-            for (auto& shooter : shooters)
-                shooter->cleanupEnemies();
 
 
             //RYSOWANIE

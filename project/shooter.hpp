@@ -34,9 +34,11 @@ private:
 
 public:
     // Konstruktor
-    Shooter(const sf::Texture& texture, float randX, float randY);
+    Shooter(const sf::Texture& texture, float randX, float randY, int type);
+    ~Shooter();
 
     // Funkcje
+    void removeEnemy(Enemy* enemy);
     void cleanupEnemies();
 
     void notifyEnemies();

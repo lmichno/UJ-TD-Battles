@@ -10,7 +10,7 @@ extern std::mt19937 rng;
 float randFloat(float a, float b);
 
 // Konstruktor
-Shooter::Shooter(const sf::Texture& texture, float randX, float randY)
+Shooter::Shooter(const sf::Texture& texture, float randX, float randY, int type)
     : sprite(texture) // sf::Sprite dla SFML 3.0> nie ma domyślnego kontruktora, więc musimy upewnić się, że sprite dostanie teksturę zanim będziemy wykonywać na nim jakiekolwiek operacje
 {
     sprite.setTextureRect(sf::IntRect({ 0, 0 }, { 32, 64 }));
@@ -23,18 +23,58 @@ Shooter::Shooter(const sf::Texture& texture, float randX, float randY)
     currentFrame = 0;
     totalFrames = 2;
 
-    health = 3.0f;
-    demage = 1.0f;
-    range = 700.0f;
+    switch (type)
+    {
+    case 0:
+        health = 5.0f;
+        demage = 1.0f;
+        range = 700.0f;
+        shootCooldown = 2.0f; // Czas między strzałami
+		break;
+    case 1:
+        health = 8.0f;
+        demage = 2.0f;
+        range = 600.0f;
+        shootCooldown = 1.0f;
+		break;
+    case 2:
+        health = 15.0f;
+        demage = 3.0f;
+        range = 800.0f;
+		shootCooldown = 0.5f;
+        break;
+    case 3:
+		health = 25.0f;
+		demage = 5.0f;
+		range = 900.0f;
+		shootCooldown = 0.3f;
+        break;
+    default:
+        health = 5.0f;
+        demage = 1.0f;
+        range = 700.0f;
+        shootCooldown = 2.0f;
+        break;
+    }
 
     target = { 0,0 };
 
-    shootCooldown = 2.0f; // Czas między strzałami
     shootCooldownTimer = 0.0f;
-    shootCooldownVariation = randFloat(0.5f, 1.5f); // Losowy offset: 0.5x do 1.5x normalnego cooldownu
+    shootCooldownVariation = randFloat(0.7f, 1.3f); // Losowy offset: 0.5x do 1.5x normalnego cooldownu
+}
+
+Shooter::~Shooter() {
+    notifyEnemies();
 }
 
 // Funkcje
+
+void Shooter::removeEnemy(Enemy* enemy) {
+    auto it = std::find(enemies.begin(), enemies.end(), enemy);
+    if (it != enemies.end()) {
+        enemies.erase(it);
+    }
+}
 
 void Shooter::notifyEnemies() {
     for (Enemy* enemy : enemies) {
