@@ -4,6 +4,7 @@
 #include <memory>
 #include <algorithm>
 
+#include "ekran_wstepu.hpp"
 #include "shooter.hpp"
 #include "enemy.hpp"
 #include "button.hpp"
@@ -15,9 +16,11 @@ std::mt19937 rng(std::random_device{}());
 float randFloat(float a, float b);
 int randInt(int a, int b);
 
-int main()
+int main() 
 {
     sf::RenderWindow window(sf::VideoMode({ 1280, 720 }), "UJ TD 1");
+
+    TVMENU(window);
 
     while (window.isOpen()) 
     {
