@@ -19,9 +19,8 @@ void HordMode(int dif) {
 Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
     : sprite(texture) // sf::Sprite dla SFML 3.0> nie ma domyślnego kontruktora, więc musimy upewnić się, �e sprite dostanie teksturę zanim będziemy wykonywać na nim jakiekolwiek operacje
 {
-    sprite.setTextureRect(sf::IntRect({ 0, 0 }, { 16, 32 }));
+    sprite.setTextureRect(sf::IntRect({ 0, 0 }, { 32, 64 }));
     sprite.setPosition({ 1280, randY });
-    sprite.setScale({ -2, 2 });
 
     timeSinceLastFrame = 0.0f;
     frameDuration = 0.2f; // Długość animacji w sekundach
@@ -33,6 +32,7 @@ Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
 
     switch (type) {
     case 0: //pierwszy wrog
+        sprite.setScale({ -1.5f, 1.5f });
         health = 2.0f * globalDificulty;
         demage = 1.0f * globalDificulty;
         range = 400.0f;
@@ -41,19 +41,30 @@ Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
         break;
 
     case 1:
+        sprite.setScale({ -1.5f, 1.5f });
         health = 4.0f * globalDificulty;
         demage = 2.0f * globalDificulty;
         range = 300.0f;
         speed = 2.0f * globalDificulty;
         walkingSpeed = 200.0f * globalDificulty;
         break;
+        
     case 2:
-
+        sprite.setScale({ -1.5f, 1.5f });
         health = 5.0f * globalDificulty;
         demage = 2.0f * globalDificulty;
         range = 600.0f;
         speed = 1.5f * globalDificulty;
         walkingSpeed = 50.0f * globalDificulty;
+        break;
+        
+    case 3:
+        sprite.setScale({ -2.5f, 2.5f });
+        health = 25.0f * globalDificulty;
+        demage = 5.0f * globalDificulty;
+        range = 300.0f;
+        speed = 1.0f * globalDificulty;
+        walkingSpeed = 25.0f * globalDificulty;
         break;
 
     }
@@ -77,7 +88,7 @@ void Enemy::update(float dt) {
 
             if (currentFrame >= totalFrames) currentFrame = 0; // Powrót do pierwszej ramki
 
-            sprite.setTextureRect(sf::IntRect({ currentFrame * 16, 0 }, { 16, 32 })); // Kolejne klatki
+            sprite.setTextureRect(sf::IntRect({ currentFrame * 32, 0 }, { 32, 64 })); // Kolejne klatki
 
             timeSinceLastFrame -= frameDuration;
         }
@@ -89,7 +100,7 @@ void Enemy::update(float dt) {
             timeSinceLastFrame += dt;
 
 
-            sprite.setTextureRect(sf::IntRect({ 0, 32 }, { 16, 32 }));
+            sprite.setTextureRect(sf::IntRect({ 0, 64 }, { 32, 64 }));
 
             if (timeSinceLastFrame >= speed)
             {
@@ -97,7 +108,7 @@ void Enemy::update(float dt) {
                 currentFrame = 1;
                 timeSinceLastFrame = 0.0f;
 
-                sprite.setTextureRect(sf::IntRect({ currentFrame * 16, 32 }, { 16, 32 }));
+                sprite.setTextureRect(sf::IntRect({ currentFrame * 32, 64 }, { 32, 64 }));
 
                 if (target != nullptr) target->takeDamage(demage);
 				else targetPos = { -10000.0f, -100.0f };
@@ -108,14 +119,14 @@ void Enemy::update(float dt) {
         {
             timeSinceLastFrame += dt;
 
-            sprite.setTextureRect(sf::IntRect({ currentFrame * 16, 32 }, { 16, 32 }));
+            sprite.setTextureRect(sf::IntRect({ currentFrame * 32, 64 }, { 32, 64 }));
 
             if (timeSinceLastFrame >= frameDuration)
             {
                 currentFrame = 0;
                 timeSinceLastFrame = 0.0f;
 
-                sprite.setTextureRect(sf::IntRect({ 0, 32 }, { 16, 32 }));
+                sprite.setTextureRect(sf::IntRect({ 0, 64 }, { 32, 64 }));
             }
         }
         else
@@ -123,7 +134,7 @@ void Enemy::update(float dt) {
             // zabezpieczenie
             currentFrame = 0;
             timeSinceLastFrame = 0.0f;
-            sprite.setTextureRect(sf::IntRect({ 0, 32 }, { 16, 32 }));
+            sprite.setTextureRect(sf::IntRect({ 0, 64 }, { 32, 64 }));
         }
     }
 }

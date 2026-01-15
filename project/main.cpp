@@ -17,7 +17,8 @@ int randInt(int a, int b);
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode({ 1280, 720 }), "UJ TD 1");
+    // Główne operacje
+    sf::RenderWindow window(sf::VideoMode({ 1280, 720 }), "UJ TD 1"); // Utworzenie okna
 
     while (window.isOpen()) 
     {
@@ -126,12 +127,27 @@ int main()
         jaguar4Cost.setPosition({ 15, 540 });
 
         //TEKSTURY
-        sf::Texture jaguar1("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
-        sf::Texture jaguar2("wrog2.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
-        sf::Texture jaguar3("wrog3.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
-        sf::Texture ludzik("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
-        sf::Texture ludzik2("wrog2.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
-        sf::Texture ludzik3("wrog3.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
+        sf::Texture jaguar1("jaguar1.png");
+        sf::Texture jaguar2("jaguar2.png");
+        sf::Texture jaguar3("jaguar3.png");
+        sf::Texture jaguar4("jaguar4.png");
+        sf::Texture ludzik("wrog1.png");
+        sf::Texture ludzik2("wrog2.png");
+        sf::Texture ludzik3("wrog3.png");
+        sf::Texture backgroundTexture1;
+        backgroundTexture1.loadFromFile("background.png");
+        sf::Texture backgroundTexture2;
+        backgroundTexture2.loadFromFile("background1.png");
+        sf::Texture backgroundTexture3;
+        backgroundTexture3.loadFromFile("background2.png");
+
+        sf::Sprite backgroundSprite1(backgroundTexture1);
+        backgroundSprite1.setScale({ 1280.f / backgroundTexture1.getSize().x,720.f / backgroundTexture1.getSize().y });
+        sf::Sprite backgroundSprite2(backgroundTexture2);
+        backgroundSprite2.setScale({ 1280.f / backgroundTexture2.getSize().x,720.f / backgroundTexture2.getSize().y });
+        sf::Sprite backgroundSprite3(backgroundTexture1);
+        backgroundSprite3.setScale({ 1280.f / backgroundTexture3.getSize().x,720.f / backgroundTexture3.getSize().y });
+
         sf::Texture bullet("bullet.png", false, sf::IntRect({ 0, 0 }, { 26, 8 }));
         sf::Texture sidePanel("sidePanel.png");
 
@@ -756,11 +772,10 @@ int main()
 
             //RYSOWANIE
 
-
-            window.clear(sf::Color::White);
-
             mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-
+            
+            window.draw(backgroundSprite1);
+            
             jaguar1Button.update(mousePos, money);
             jaguar2Button.update(mousePos, money);
             jaguar3Button.update(mousePos, money);

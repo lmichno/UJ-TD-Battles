@@ -13,10 +13,10 @@ float randFloat(float a, float b);
 Shooter::Shooter(const sf::Texture& texture, float randX, float randY)
     : sprite(texture) // sf::Sprite dla SFML 3.0> nie ma domyślnego kontruktora, więc musimy upewnić się, że sprite dostanie teksturę zanim będziemy wykonywać na nim jakiekolwiek operacje
 {
-    sprite.setTextureRect(sf::IntRect({ 0, 0 }, { 16, 32 }));
+    sprite.setTextureRect(sf::IntRect({ 0, 0 }, { 32, 64 }));
 
     sprite.setPosition({ randX, randY });
-    sprite.setScale({ 2, 2 });
+    sprite.setScale({ 1.5f, 1.5f });
     
     timeSinceLastFrame = 0.0f;
     frameDuration = 0.2f; // Długość animacji w sekundach
@@ -160,7 +160,7 @@ void Shooter::update(float dt) {
 
         if (currentFrame >= totalFrames) currentFrame = 0; // Powrót do pierwszej ramki
 
-        sprite.setTextureRect(sf::IntRect({ currentFrame * 16, 0 }, { 16, 32 })); // Kolejne klatki
+        sprite.setTextureRect(sf::IntRect({ currentFrame * 32, 0 }, { 32, 64 })); // Kolejne klatki
 
         timeSinceLastFrame -= frameDuration;
     }
