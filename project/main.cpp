@@ -315,8 +315,8 @@ int main()
             // FALA 3
             else if (currentWave == 3)
             {
-                if (shooters.empty())
-                    continue;
+                if (!shooters.empty())
+                {
 
                 if (waveTime < wave3Duration)
                 {
@@ -443,13 +443,14 @@ int main()
                     lastEnemySpawnTime4 = -2.0f;
                     continue;
                 }
+                } // End if !shooters.empty()
             }
 
             //FALA 4
             else if (currentWave == 4)
             {
-                if (shooters.empty())
-                    continue;
+                if (!shooters.empty())
+                {
 
                 if (waveTime < 45.0f)
                 {
@@ -530,13 +531,14 @@ int main()
                         continue;
                     }
                 }
+                } // End if !shooters.empty()
             }
 
             //FALA 5
             else if (currentWave == 5)
             {
-                if (shooters.empty())
-                    continue;
+                if (!shooters.empty())
+                {
 
                 if (waveTime < 45.0f &&
                     waveTime - lastEnemySpawnTime5 >= 3.0f)
@@ -582,13 +584,14 @@ int main()
                     lastEnemySpawnTime6 = -2.0f;
                     continue;
                 }
+                } // End if !shooters.empty()
             }
 
             //FALA 6
             else if (currentWave == 6)
             {
-                if (shooters.empty())
-                    continue;
+                if (!shooters.empty())
+                {
 
                 if (waveTime < 45.0f &&
                     waveTime - lastEnemySpawnTime6 >= 4.0f)
@@ -622,14 +625,15 @@ int main()
                     waveText.setString("FALA 7");
                     lastEnemySpawnTime7 = -1.0f;
                 }
+                } // End if !shooters.empty()
 
             }
 
             //FALA 7
             else if (currentWave == 7)
             {
-                if (shooters.empty())
-                    continue;
+                if (!shooters.empty())
+                {
 
 
                 if (waveTime >= wave7Duration)
@@ -710,6 +714,7 @@ int main()
                         shooters[r]->addEnemy(enemies.back().get());
                     }
                 }
+                } // End !shooters.empty()
             }
 
 
@@ -783,7 +788,21 @@ int main()
 
             mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
             
-            window.draw(backgroundSprite1);
+            switch(lvl)
+            {
+                case 1:
+                    window.draw(backgroundSprite1);
+                    break;
+                case 2:
+                    window.draw(backgroundSprite2);
+                    break;
+                case 3:
+                    window.draw(backgroundSprite3);
+                    break;
+                default:
+                    window.draw(backgroundSprite1);
+                    break;
+			}
             
             jaguar1Button.update(mousePos, money);
             jaguar2Button.update(mousePos, money);
