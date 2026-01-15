@@ -2,6 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
+extern float globalDificulty;
+void HordMode(int dif);
+
 class Shooter;
 
 class Enemy
@@ -30,7 +33,7 @@ public:
     Enemy(const sf::Texture& texture, float randY, Shooter* shooter, int type);
 
     // Funkcje
-
+    //asdsad
     // Renderowanie
     void update(float dt);
 

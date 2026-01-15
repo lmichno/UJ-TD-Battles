@@ -2,6 +2,19 @@
 #include "shooter.hpp"
 #include <iostream>
 
+float globalDificulty;
+void HordMode(int dif) {
+    switch (dif) { case 2: 
+        globalDificulty = 1.5f; 
+        break;
+    case 3: 
+        globalDificulty = 2.0f; 
+        break;
+    default: 
+        globalDificulty = 1.0f; }
+
+}
+
 // Konstruktor
 Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
     : sprite(texture) // sf::Sprite dla SFML 3.0> nie ma domyślnego kontruktora, więc musimy upewnić się, �e sprite dostanie teksturę zanim będziemy wykonywać na nim jakiekolwiek operacje
@@ -20,27 +33,27 @@ Enemy::Enemy(const sf::Texture& texture, float randY, Shooter* shooter,int type)
 
     switch (type) {
     case 0: //pierwszy wrog
-        health = 2.0f;
-        demage = 1.0f;
+        health = 2.0f * globalDificulty;
+        demage = 1.0f * globalDificulty;
         range = 400.0f;
-        speed = 1.0f;
-        walkingSpeed = 100.0f;
+        speed = 1.0f * globalDificulty;
+        walkingSpeed = 100.0f * globalDificulty;
         break;
 
     case 1:
-        health = 4.0f;
-        demage = 2.0f;
+        health = 4.0f * globalDificulty;
+        demage = 2.0f * globalDificulty;
         range = 300.0f;
-        speed = 2.0f;
-        walkingSpeed = 200.0f;
+        speed = 2.0f * globalDificulty;
+        walkingSpeed = 200.0f * globalDificulty;
         break;
     case 2:
 
-        health = 5.0f;
-        demage = 2.0f;
+        health = 5.0f * globalDificulty;
+        demage = 2.0f * globalDificulty;
         range = 600.0f;
-        speed = 1.5f;
-        walkingSpeed = 50.0f;
+        speed = 1.5f * globalDificulty;
+        walkingSpeed = 50.0f * globalDificulty;
         break;
 
     }

@@ -71,6 +71,20 @@ void Shooter::shoot(Enemy* target, const sf::Texture& bulletTexture)
         shootCooldownTimer = shootCooldown * shootCooldownVariation; // Losowy offset
     }
 }
+// czyszczenie wskaznikow
+void Shooter::cleanupEnemies()
+{
+    enemies.erase(
+        std::remove_if(enemies.begin(), enemies.end(),
+            [](Enemy* e) {
+                return e == nullptr || !e->isAlive();
+            }),
+        enemies.end());
+}
+
+
+
+
 
 Enemy* Shooter::findNearestEnemy(std::vector<std::unique_ptr<Enemy>>& enemies)
 {

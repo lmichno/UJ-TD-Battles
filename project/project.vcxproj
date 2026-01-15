@@ -137,6 +137,7 @@
     <ClCompile Include="button.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="menu.cpp" />
     <ClCompile Include="shooter.cpp" />
     <ClCompile Include="shooter.hpp" />
   </ItemGroup>
@@ -144,6 +145,7 @@
     <ClInclude Include="bullet.hpp" />
     <ClInclude Include="button.hpp" />
     <ClInclude Include="enemy.hpp" />
+    <ClInclude Include="menu.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
