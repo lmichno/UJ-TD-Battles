@@ -602,14 +602,15 @@ int main()
                             shooters[r]->addEnemy(enemies.back().get());
                         }
                     }
-                    if (waveTime >= wave3Duration)
-                    {
-                        currentWave = 5;
-                        waveClock.restart();
-                        waveText.setString("FALA 5");
-                        lastEnemySpawnTime5 = -2.0f;
-                        continue;
-                    }
+                    
+                }
+                if (waveTime >= wave4Duration)
+                {
+                    currentWave = 5;
+                    waveClock.restart();
+                    waveText.setString("FALA 5");
+                    lastEnemySpawnTime5 = -2.0f;
+                    continue;
                 }
                 } // End if !shooters.empty()
             }
@@ -656,13 +657,13 @@ int main()
                         ludzik, randFloat(0, 656), shooters[r].get(), 0));
                     shooters[r]->addEnemy(enemies.back().get());
                 }
-                if (waveTime >= wave3Duration)
+                if (waveTime >= wave5Duration)
                 {
                     currentWave = 6;
                     waveClock.restart();
                     waveText.setString("FALA 6");
                     lastEnemySpawnTime6 = -2.0f;
-                    continue;
+                    continue; 
                 }
                 } // End if !shooters.empty()
             }
@@ -698,8 +699,8 @@ int main()
 
 
                 }
-                else
-                {
+                
+                if (waveTime >= wave6Duration) {
                     currentWave = 7;
                     waveClock.restart();
                     waveText.setString("FALA 7");
