@@ -6,7 +6,7 @@
 
 MenuResult showMenu(sf::RenderWindow& window)
 {
-    sf::Font font("LuckiestGuy-Regular.ttf");
+    sf::Font font("RussoOne-Regular.ttf");
 
     int lvl = 0;
     int difficulty = 0;
@@ -14,8 +14,8 @@ MenuResult showMenu(sf::RenderWindow& window)
     while (window.isOpen())
     {
         sf::Vector2u win = window.getSize();
-        float w = static_cast<float>(win.x);
-        float h = static_cast<float>(win.y);
+        float w = 1280;
+        float h = 720;
 
         // Skalowanie i centrowanie kafelków w rzędzie
         float maxRowWidth = w * 0.9f;
@@ -36,7 +36,7 @@ MenuResult showMenu(sf::RenderWindow& window)
 
         // Górny tytuł
         sf::Text title(font);
-        title.setString("WYBIERZ POZIOM I TRUDNOSC:");
+        title.setString("WYBIERZ POZIOM:");
         title.setCharacterSize(static_cast<unsigned>(h * 0.06f));
         title.setFillColor(sf::Color::White);
         {
@@ -46,7 +46,7 @@ MenuResult showMenu(sf::RenderWindow& window)
 
         // Tytuł 
         sf::Text difTitle(font);
-        difTitle.setString("WYBIERZ POZIOM TRUDNOSCI:");
+        difTitle.setString("WYBIERZ TRUDNOSC:");
         difTitle.setCharacterSize(static_cast<unsigned>(h * 0.045f));
         difTitle.setFillColor(sf::Color::White);
         {
