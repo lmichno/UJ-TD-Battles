@@ -18,7 +18,7 @@ int randInt(int a, int b);
 int main()
 {
     // Główne operacje
-    sf::RenderWindow window(sf::VideoMode({ 1280, 720 }), "UJ TD 1"); // Utworzenie okna
+    sf::RenderWindow window(sf::VideoMode({ 1280, 720 }), "AGH Defenders"); // Utworzenie okna
 
     while (window.isOpen()) 
     {
@@ -73,15 +73,12 @@ int main()
         sf::Font mediumGothic("ScienceGothic-Medium.ttf");
         //NAPIS FALI
         sf::Text waveText(mediumGothic);
-        waveText.setCharacterSize(48);
-        waveText.setFillColor(sf::Color::Red);
+        waveText.setCharacterSize(38);
+        waveText.setFillColor(sf::Color(53, 57, 40));
         waveText.setOutlineThickness(2);
-        waveText.setOutlineColor(sf::Color::Blue);
+        waveText.setOutlineColor(sf::Color::Black);
         waveText.setString("FALA 1");
-        waveText.setPosition(sf::Vector2f(
-            window.getSize().x * 0.5f - 80.f,
-            window.getSize().y - 70.f 
-        ));
+        waveText.setPosition(sf::Vector2f(1100,670));
 
         
 
@@ -97,34 +94,37 @@ int main()
 
         sf::Text kasa = text;
         kasa.setFillColor(sf::Color::Yellow);
-        kasa.setOutlineThickness(1);
+        kasa.setOutlineThickness(1.8f);
         kasa.setOutlineColor(sf::Color::Black);
         kasa.setPosition({ 20, 38 });
 
         sf::Text zarobki = text;
         zarobki.setString(std::to_string(moneyAdd) + " $/s");
-        zarobki.setPosition({ 20, 85 });
-        zarobki.setFillColor(sf::Color::Green);
-        zarobki.setOutlineThickness(1);
+        zarobki.setPosition({ 20, 86 });
+        zarobki.setFillColor(sf::Color(134, 172, 19));
+        zarobki.setOutlineThickness(1.8f);
         zarobki.setOutlineColor(sf::Color::Black);
 
         sf::Text jaguar1Cost = text;
-        jaguar1Cost.setCharacterSize(12);
-        jaguar1Cost.setFillColor(sf::Color::Yellow);
-        jaguar1Cost.setOutlineThickness(0.8f);
+        jaguar1Cost.setCharacterSize(20);
+        jaguar1Cost.setFillColor(sf::Color(134, 172, 19));
+        jaguar1Cost.setOutlineThickness(1.8f);
 
         sf::Text jaguar2Cost = jaguar1Cost;
         sf::Text jaguar3Cost = jaguar1Cost;
-        sf::Text jaguar4Cost = jaguar1Cost;
+        sf::Text jaguar4Cost = text;
+        jaguar4Cost.setCharacterSize(18);
+        jaguar4Cost.setFillColor(sf::Color(134, 172, 19));
+        jaguar4Cost.setOutlineThickness(1.8f);
 
         jaguar1Cost.setString("15");
-        jaguar1Cost.setPosition({ 15, 150 });
+        jaguar1Cost.setPosition({ 70, 212 });
         jaguar2Cost.setString("30");
-        jaguar2Cost.setPosition({ 15, 280 });
+        jaguar2Cost.setPosition({ 70, 340 });
         jaguar3Cost.setString("60");
-        jaguar3Cost.setPosition({ 15, 410 });
+        jaguar3Cost.setPosition({ 70, 468 });
         jaguar4Cost.setString("120");
-        jaguar4Cost.setPosition({ 15, 540 });
+        jaguar4Cost.setPosition({ 68, 603 });
 
         //TEKSTURY
         sf::Texture jaguar1("jaguar1.png");
@@ -160,13 +160,7 @@ int main()
                 jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f)));
         }
 
-        sf::RectangleShape rectangle({ 5, 720 });
-        rectangle.setFillColor(sf::Color::Black);
-        rectangle.setPosition({ 190, 0 });
-
-        sf::RectangleShape rect2({ 2, 720 });
-        rect2.setFillColor(sf::Color::Black);
-        rect2.setPosition({ 126, 0 });
+       
 
         waveClock.restart();
 
@@ -781,8 +775,7 @@ int main()
             jaguar3Button.update(mousePos, money);
             jaguar4Button.update(mousePos, money);
 
-            window.draw(rectangle);
-            window.draw(rect2);
+           
 
             window.draw(sidePanelSprite);
             window.draw(kasa);
