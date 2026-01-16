@@ -68,6 +68,7 @@ int main()
 
         const float gameOverLineX = 190.f;
         bool gameOver = false;
+        bool goToMenu = false;
 
         int currentWave = 1;
 
@@ -112,6 +113,8 @@ int main()
         Button jaguar2Button(12, 243, 100, 125, 30);
         Button jaguar3Button(12, 371, 100, 125, 60);
         Button jaguar4Button(12, 504, 100, 125, 120);
+        Button menuButton(68, 673, 46, 40, 0);
+        Button ustawieniaButton(13,673,46,40,0);
 
         sf::Text text(mediumGothic);
         text.setCharacterSize(18);
@@ -189,7 +192,7 @@ int main()
 
         waveClock.restart();
 
-        while (window.isOpen() && !gameOver)
+        while (window.isOpen() && !gameOver && !goToMenu)
         {
             // ZAKUP
             while (const std::optional event = window.pollEvent())
@@ -227,6 +230,8 @@ int main()
                     jaguar2Button.onMouseReleased();
                     jaguar3Button.onMouseReleased();
                     jaguar4Button.onMouseReleased();
+                    menuButton.onMouseReleased();
+                    ustawieniaButton.onMouseReleased();
 
                     if (jaguar1Button.onClicked(money))
                         shooters.push_back(std::make_unique<Shooter>(
@@ -243,6 +248,10 @@ int main()
                     if (jaguar4Button.onClicked(money))
                         shooters.push_back(std::make_unique<Shooter>(
                             jaguar4, randFloat(130.f, 170.f), randFloat(0.f, 656.0f), 3));
+                    if (menuButton.onClicked(money))
+                    {
+                        goToMenu = true;
+                    }
 
                     kasa.setString(std::to_string(money));
                 }
@@ -888,6 +897,8 @@ int main()
             jaguar2Button.update(mousePos, money);
             jaguar3Button.update(mousePos, money);
             jaguar4Button.update(mousePos, money);
+            menuButton.update(mousePos, money);
+            ustawieniaButton.update(mousePos, money);
 
            
 
@@ -903,6 +914,8 @@ int main()
             jaguar2Button.draw(window);
             jaguar3Button.draw(window);
             jaguar4Button.draw(window);
+            menuButton.draw(window);
+            ustawieniaButton.draw(window);
 
             for (const auto& shooter : shooters)
             {
