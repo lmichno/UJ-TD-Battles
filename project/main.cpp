@@ -112,6 +112,7 @@ int main()
         Button jaguar2Button(12, 243, 100, 125, 30);
         Button jaguar3Button(12, 371, 100, 125, 60);
         Button jaguar4Button(12, 504, 100, 125, 120);
+        Button bombaButton(9, 630, 106, 42, 15);
 
         sf::Text text(mediumGothic);
         text.setCharacterSize(18);
@@ -889,6 +890,7 @@ int main()
             jaguar2Button.update(mousePos, money);
             jaguar3Button.update(mousePos, money);
             jaguar4Button.update(mousePos, money);
+            bombaButton.update(mousePos, money);
 
            
 
@@ -904,6 +906,7 @@ int main()
             jaguar2Button.draw(window);
             jaguar3Button.draw(window);
             jaguar4Button.draw(window);
+            bombaButton.draw(window);
 
             for (const auto& shooter : shooters)
             {
