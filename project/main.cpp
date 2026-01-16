@@ -170,7 +170,7 @@ int main()
         backgroundSprite1.setScale({ 1280.f / backgroundTexture1.getSize().x,720.f / backgroundTexture1.getSize().y });
         sf::Sprite backgroundSprite2(backgroundTexture2);
         backgroundSprite2.setScale({ 1280.f / backgroundTexture2.getSize().x,720.f / backgroundTexture2.getSize().y });
-        sf::Sprite backgroundSprite3(backgroundTexture1);
+        sf::Sprite backgroundSprite3(backgroundTexture3);
         backgroundSprite3.setScale({ 1280.f / backgroundTexture3.getSize().x,720.f / backgroundTexture3.getSize().y });
 
         sf::Texture bullet("bullet.png", false, sf::IntRect({ 0, 0 }, { 26, 8 }));
