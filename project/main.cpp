@@ -41,6 +41,31 @@ int main()
         int moneyAdd = 5;
         float moneyTimer = 0.0f;
 
+        //SKRZYNIA Z KASA
+        sf::Texture chestTexture("skrzynia.png"); // 
+        sf::Sprite chestSprite(chestTexture);
+
+        bool chestActive = false;
+        bool chestFalling = false;
+
+        sf::Clock chestSpawnClock;
+        sf::Clock chestLifeClock;
+
+        float chestSpawnDelay = randFloat(12.f, 25.f);
+        float chestLifetime = 0.f;
+
+        float chestFallSpeed = 300.f; 
+ 
+        const float playAreaLeft = 200.f;
+        const float playAreaRight = 1220.f;
+        const float playAreaMinGroundY = 100.f; 
+        const float playAreaMaxGroundY = 560.f; 
+        float chestTargetY = 0.f;
+
+
+        int chestReward = 100;
+
+
         const float gameOverLineX = 190.f;
         bool gameOver = false;
 
@@ -184,6 +209,22 @@ int main()
                     jaguar2Button.onMousePressed();
                     jaguar3Button.onMousePressed();
                     jaguar4Button.onMousePressed();
+
+                    if (chestActive && !chestFalling &&
+                        mousePressed->button == sf::Mouse::Button::Left)
+                    {
+                        sf::Vector2f mousePos =
+                            window.mapPixelToCoords({ mousePressed->position.x, mousePressed->position.y });
+
+                        if (chestSprite.getGlobalBounds().contains(mousePos))
+                        {
+                            money += chestReward;
+
+                            chestActive = false;
+                            chestSpawnClock.restart();
+                        }
+                    }
+
                 }
 
                 if (const auto* mouseReleased = event->getIf<sf::Event::MouseButtonReleased>())
@@ -218,6 +259,51 @@ int main()
             // DELTA TIME
             float dt = clock.restart().asSeconds();
             float waveTime = waveClock.getElapsedTime().asSeconds();
+
+            //SPAWN SKRZYNKI
+            if (!chestActive && chestSpawnClock.getElapsedTime().asSeconds() >= chestSpawnDelay)
+            {
+                chestActive = true;
+                chestFalling = true;
+
+                chestSprite.setPosition({
+                 randFloat(playAreaLeft, playAreaRight - 27.f), 
+                   -30.f
+                    });
+
+
+                chestSpawnDelay = randFloat(12.f, 25.f);
+                chestTargetY = randFloat(playAreaMinGroundY, playAreaMaxGroundY);
+
+            }
+            
+        // ---------- SPADANIE ----------
+            if (chestActive && chestFalling)
+            {
+                chestSprite.move({ 0.f, chestFallSpeed * dt });
+
+                if (chestSprite.getPosition().y >= chestTargetY)
+                {
+                    chestSprite.setPosition({
+                        chestSprite.getPosition().x,
+                        chestTargetY
+                        });
+
+
+                    chestFalling = false;
+                    chestLifetime = randFloat(5.f, 10.f);
+                    chestLifeClock.restart();
+                }
+            }
+
+        // ---------- CZAS NA KLIK ----------
+        if (chestActive && !chestFalling &&
+            chestLifeClock.getElapsedTime().asSeconds() >= chestLifetime)
+        {
+            chestActive = false;
+            chestSpawnClock.restart();
+        }
+
 
             // MONEY CASH
             moneyTimer += dt;
@@ -372,13 +458,13 @@ int main()
 
                     }
 
-                    // 6 wrogów co 1 sekundę
+                    // 4 wrogów co 1 sekundę
                     else if (sixSpawnWindow && waveTime - lastEnemySpawnTime3 >= 1.0f)
                     {
                         lastEnemySpawnTime3 = waveTime;
 
-                        // 4x ludzik2
-                        for (int i = 0; i < 4; i++)
+                        // 3x ludzik2
+                        for (int i = 0; i < 3; i++)
                         {
                             int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
                             enemies.push_back(std::make_unique<Enemy>(
@@ -386,8 +472,8 @@ int main()
                             shooters[randomT]->addEnemy(enemies.back().get());
                         }
 
-                        // 2x ludzik3
-                        for (int i = 0; i < 2; i++)
+                        // 1x ludzik3
+                        for (int i = 0; i < 1; i++)
                         {
                             int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
                             enemies.push_back(std::make_unique<Enemy>(
@@ -397,12 +483,12 @@ int main()
 
                     }
 
-                    // 8 wrogów co 1 sekundę
+                    // 6 wrogów co 1 sekundę
                     else if (eightSpawnWindow && waveTime - lastEnemySpawnTime3 >= 1.0f)
                     {
                         lastEnemySpawnTime3 = waveTime;
 
-                        // 5x ludzik3
+                        // 3x ludzik3
                         for (int i = 0; i < 5; i++)
                         {
                             int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
@@ -838,6 +924,10 @@ int main()
             }
             //nazwa fali
             window.draw(waveText);
+
+            if (chestActive)
+                window.draw(chestSprite);
+
 
             window.display();
         }
