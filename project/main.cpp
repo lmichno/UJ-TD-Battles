@@ -4,6 +4,7 @@
 #include <memory>
 #include <algorithm>
 
+#include "ekran_wstepu.hpp"
 #include "shooter.hpp"
 #include "enemy.hpp"
 #include "button.hpp"
@@ -15,13 +16,15 @@ std::mt19937 rng(std::random_device{}());
 float randFloat(float a, float b);
 int randInt(int a, int b);
 
-int main()
-{
-    // Główne operacje
-    sf::RenderWindow window(sf::VideoMode({ 1280, 720 }), "AGH Defenders"); // Utworzenie okna
-   
 
-    while (window.isOpen()) 
+int main() 
+{
+    sf::RenderWindow window(sf::VideoMode({ 1280, 720 }), "AGH Defenders");
+    int money2 = 0;
+    int moneyPerSec = 0;
+    TVMENU(window);
+
+    while (window.isOpen())
     {
         //MENU 
         MenuResult result = showMenu(window);
@@ -40,9 +43,18 @@ int main()
 
         std::vector<std::unique_ptr<Shooter>> shooters;
         std::vector<std::unique_ptr<Enemy>> enemies;
-
+        int money2 = result.money2;
+        int moneyPerSec = result.moneyPerSec;
         int money = 200;
         int moneyAdd = 5;
+        if (money2 != 0) {
+             money = money2;
+        }
+        if (moneyPerSec != 0) {
+            moneyAdd = moneyPerSec;
+        }
+    
+
         float moneyTimer = 0.0f;
 
         bool bombaActive = false;

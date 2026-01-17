@@ -4,14 +4,18 @@
 
 float globalDificulty;
 void HordMode(int dif) {
-    switch (dif) { case 2: 
+    switch (dif) {
+    case 1:
+        globalDificulty = 1.0f;
+        break;
+    case 2: 
         globalDificulty = 1.5f; 
         break;
     case 3: 
         globalDificulty = 2.0f; 
         break;
     default: 
-        globalDificulty = 1.0f; }
+        globalDificulty = dif; }
 
 }
 
