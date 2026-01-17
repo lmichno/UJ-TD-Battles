@@ -10,31 +10,78 @@ extern std::mt19937 rng;
 float randFloat(float a, float b);
 
 // Konstruktor
-Shooter::Shooter(const sf::Texture& texture, float randX, float randY)
+Shooter::Shooter(const sf::Texture& texture, float randX, float randY, int type)
     : sprite(texture) // sf::Sprite dla SFML 3.0> nie ma domyślnego kontruktora, więc musimy upewnić się, że sprite dostanie teksturę zanim będziemy wykonywać na nim jakiekolwiek operacje
 {
-    sprite.setTextureRect(sf::IntRect({ 0, 0 }, { 16, 32 }));
+    sprite.setTextureRect(sf::IntRect({ 0, 0 }, { 32, 64 }));
 
     sprite.setPosition({ randX, randY });
-    sprite.setScale({ 2, 2 });
+    sprite.setScale({ 1.5f, 1.5f });
     
     timeSinceLastFrame = 0.0f;
     frameDuration = 0.2f; // Długość animacji w sekundach
     currentFrame = 0;
     totalFrames = 2;
 
-    health = 3.0f;
-    demage = 1.0f;
-    range = 700.0f;
+    switch (type)
+    {
+    case 0:
+        health = 5.0f;
+        demage = 1.0f;
+        range = 700.0f;
+        shootCooldown = 2.0f; // Czas między strzałami
+		break;
+    case 1:
+        health = 8.0f;
+        demage = 2.0f;
+        range = 600.0f;
+        shootCooldown = 1.0f;
+		break;
+    case 2:
+        health = 15.0f;
+        demage = 3.0f;
+        range = 800.0f;
+		shootCooldown = 0.5f;
+        break;
+    case 3:
+		health = 25.0f;
+		demage = 5.0f;
+		range = 900.0f;
+		shootCooldown = 0.3f;
+        break;
+    default:
+        health = 5.0f;
+        demage = 1.0f;
+        range = 700.0f;
+        shootCooldown = 2.0f;
+        break;
+    }
 
     target = { 0,0 };
 
-    shootCooldown = 2.0f; // Czas między strzałami
     shootCooldownTimer = 0.0f;
-    shootCooldownVariation = randFloat(0.5f, 1.5f); // Losowy offset: 0.5x do 1.5x normalnego cooldownu
+    shootCooldownVariation = randFloat(0.7f, 1.3f); // Losowy offset: 0.5x do 1.5x normalnego cooldownu
+    
+    isShooting = false;
+    targetForShot = nullptr;
+    bulletTextureRef = nullptr;
+}
+
+Shooter::~Shooter() {
+    notifyEnemies();
 }
 
 // Funkcje
+
+void Shooter::removeEnemy(Enemy* enemy) {
+    if (targetForShot == enemy)
+        targetForShot = nullptr;
+
+    auto it = std::find(enemies.begin(), enemies.end(), enemy);
+    if (it != enemies.end()) {
+        enemies.erase(it);
+    }
+}
 
 void Shooter::notifyEnemies() {
     for (Enemy* enemy : enemies) {
@@ -46,7 +93,7 @@ void Shooter::notifyEnemies() {
 
 void Shooter::shoot(Enemy* target, const sf::Texture& bulletTexture)
 {
-    if (target == nullptr || shootCooldownTimer > 0.0f)
+    if (target == nullptr || shootCooldownTimer > 0.0f || isShooting)
         return;
 
     sf::Vector2f shooterPos = getPosition();
@@ -61,14 +108,18 @@ void Shooter::shoot(Enemy* target, const sf::Texture& bulletTexture)
     // Strzelaj tylko gdy cel jest w zasięgu
     if (distance <= range)
     {
-        bullets.push_back(std::make_unique<Bullet>(
-            bulletTexture,
-            shooterPos,
-            target,
-            1500.0f,  // prędkość pocisku
-            demage
-        ));
-        shootCooldownTimer = shootCooldown * shootCooldownVariation; // Losowy offset
+        // Start animation
+        isShooting = true;
+        targetForShot = target;
+        bulletTextureRef = &bulletTexture;
+        
+        currentFrame = 0;
+        timeSinceLastFrame = 0.0f;
+        
+        // Reset textures to attack row
+        sprite.setTextureRect(sf::IntRect({ 0, 64 }, { 32, 64 }));
+        
+        shootCooldownTimer = shootCooldown * shootCooldownVariation; 
     }
 }
 // czyszczenie wskaznikow
@@ -152,17 +203,67 @@ void Shooter::drawBullets(sf::RenderWindow& window)
 
 // Renderowanie
 void Shooter::update(float dt) {
-    timeSinceLastFrame += dt;
-
-    if (timeSinceLastFrame >= frameDuration)
+    if (!isShooting)
     {
-        currentFrame++; // Przejście do następnej ramki
+        // IDLE ANIMATION (Loop 0-1 at y=0)
+        timeSinceLastFrame += dt;
 
-        if (currentFrame >= totalFrames) currentFrame = 0; // Powrót do pierwszej ramki
+        if (timeSinceLastFrame >= frameDuration)
+        {
+            currentFrame++; 
+            if (currentFrame >= totalFrames) currentFrame = 0; 
 
-        sprite.setTextureRect(sf::IntRect({ currentFrame * 16, 0 }, { 16, 32 })); // Kolejne klatki
+            sprite.setTextureRect(sf::IntRect({ currentFrame * 32, 0 }, { 32, 64 })); 
 
-        timeSinceLastFrame -= frameDuration;
+            timeSinceLastFrame -= frameDuration;
+        }
+    }
+    else
+    {
+        // ATTACK ANIMATION (One-shot 0-1 at y=64)
+        timeSinceLastFrame += dt;
+
+        if (currentFrame == 0)
+        {
+            // Windup
+             sprite.setTextureRect(sf::IntRect({ 0, 64 }, { 32, 64 }));
+
+             if (timeSinceLastFrame >= 0.1f) // Fast windup
+             {
+                 currentFrame = 1;
+                 timeSinceLastFrame = 0.0f;
+                 
+                 // FIRE
+                 sprite.setTextureRect(sf::IntRect({ 32, 64 }, { 32, 64 }));
+                 
+                 // Create bullet
+                 if (targetForShot && bulletTextureRef)
+                 {
+                     sf::Vector2f sp = getPosition();
+                     
+                      bullets.push_back(std::make_unique<Bullet>(
+                        *bulletTextureRef,
+                        sp,
+                        targetForShot,
+                        1500.0f,
+                        demage
+                    ));
+                 }
+             }
+        }
+        else if (currentFrame == 1)
+        {
+             sprite.setTextureRect(sf::IntRect({ 32, 64 }, { 32, 64 }));
+             
+             if (timeSinceLastFrame >= 0.1f) // Backswing
+             {
+                 isShooting = false;
+                 currentFrame = 0;
+                 timeSinceLastFrame = 0.0f;
+                 // Back to idle
+                 sprite.setTextureRect(sf::IntRect({ 0, 0 }, { 32, 64 }));
+             }
+        }
     }
 }
 

@@ -1,16 +1,17 @@
 #include "bullet.hpp"
 #include "enemy.hpp"
+#include "shooter.hpp"
 #include <cmath>
 
-Bullet::Bullet(const sf::Texture& texture, sf::Vector2f startPos, Enemy* targetEnemy, float bulletSpeed, float bulletDamage)
-    : sprite(texture), target(targetEnemy), speed(bulletSpeed), damage(bulletDamage)
+Bullet::Bullet(const sf::Texture& texture, sf::Vector2f startPos, Enemy* target, float bulletSpeed, float bulletDamage)
+    : sprite(texture), targetEnemy(target), targetShooter(nullptr), speed(bulletSpeed), damage(bulletDamage)
 {
     sprite.setPosition(startPos);
     sprite.setScale({ 0.5f, 0.5f });
 
-    if (target != nullptr)
+    if (targetEnemy != nullptr)
     {
-        sf::Vector2f targetPos = target->getPosition();
+        sf::Vector2f targetPos = targetEnemy->getPosition();
         sf::Vector2f diff = targetPos - startPos;
         float distance = std::sqrt(diff.x * diff.x + diff.y * diff.y);
 
@@ -23,7 +24,42 @@ Bullet::Bullet(const sf::Texture& texture, sf::Vector2f startPos, Enemy* targetE
             direction = { 400.0f, 500.0f };
         }
 
-        // Obróæ pocisk w kierunku celu
+        // Obrac pocisk w kierunku celu
+        float angle = std::atan2(direction.y, direction.x) * 180.0f / 3.14159265f;        
+        sprite.setRotation(sf::degrees(angle));
+    }
+    else
+    {
+        direction = { 1.0f, 0.0f };
+        sprite.setRotation(sf::degrees(0.0f));
+    }
+}
+
+Bullet::Bullet(const sf::Texture& texture, sf::Vector2f startPos, Shooter* target, float bulletSpeed, float bulletDamage)
+    : sprite(texture), targetEnemy(nullptr), targetShooter(target), speed(bulletSpeed), damage(bulletDamage)
+{
+    sprite.setPosition(startPos);
+    sprite.setScale({ 0.5f, 0.5f });
+
+    if (targetShooter != nullptr)
+    {
+        sf::Vector2f targetPos = targetShooter->getPosition();
+        // Target center of shooter
+        targetPos.x += 24.0f; 
+        targetPos.y += 48.0f;
+
+        sf::Vector2f diff = targetPos - startPos;
+        float distance = std::sqrt(diff.x * diff.x + diff.y * diff.y);
+
+        if (distance != 0.0f)
+        {
+            direction = { diff.x / distance, diff.y / distance };
+        }
+        else
+        {
+            direction = { -1.0f, 0.0f };
+        }
+
         float angle = std::atan2(direction.y, direction.x) * 180.0f / 3.14159265f;
         sprite.setRotation(sf::degrees(angle));
     }
@@ -35,7 +71,7 @@ Bullet::Bullet(const sf::Texture& texture, sf::Vector2f startPos, Enemy* targetE
 
 void Bullet::update(float dt)
 {
-    if (target != nullptr && isAlive())
+    if (isAlive())
     {
         sprite.move({ direction.x * speed * dt, direction.y * speed * dt });
     }
@@ -53,32 +89,50 @@ sf::Vector2f Bullet::getPosition() const
 
 Enemy* Bullet::getTarget() const
 {
-    return target;
+    return targetEnemy;
+}
+
+Shooter* Bullet::getTargetShooter() const
+{
+    return targetShooter;
 }
 
 bool Bullet::hasReachedTarget() const
 {
-    if (target == nullptr)
-        return true;
+    sf::Vector2f targetPos;
+    if (targetEnemy != nullptr) {
+        targetPos = targetEnemy->getPosition();
+    } else if (targetShooter != nullptr) {
+        targetPos = targetShooter->getPosition();
+        targetPos.x += 24.0f; 
+        targetPos.y += 48.0f;
+    } else {
+        return false;
+    }
 
     sf::Vector2f bulletPos = getPosition();
-    sf::Vector2f targetPos = target->getPosition();
-    float distance = std::sqrt(
-        std::pow(bulletPos.x - targetPos.x, 2) +
-        std::pow(bulletPos.y - targetPos.y, 2)
-    );
+    float dx = bulletPos.x - targetPos.x;
+    float dy = bulletPos.y - targetPos.y;
+    float distanceSq = dx * dx + dy * dy;
 
-    return distance < 50.0f; // Trafienie w zasiêgu 30 pikseli
+    return distanceSq < (50.0f * 50.0f); // Trafienie w zasiegu 50 pikseli
 }
 
 bool Bullet::isAlive() const
 {
-    // Pocisk martwy jeœli jest poza oknem lub bez celu
+    // Pocisk martwy jesli jest poza oknem lub bez celu
     sf::Vector2f pos = getPosition();
-    return pos.x > 0 && pos.x < 1280 && pos.y > 0 && pos.y < 720 && target != nullptr;
+    bool hasTarget = true; // Allow dumb-fire
+    bool inWindow = pos.x > -50 && pos.x < 1330 && pos.y > -50 && pos.y < 770;
+    return inWindow;
 }
 
 float Bullet::getDamage() const
 {
     return damage;
+}
+
+void Bullet::setColor(const sf::Color& color)
+{
+    sprite.setColor(color);
 }

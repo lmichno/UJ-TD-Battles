@@ -19,7 +19,7 @@ int randInt(int a, int b);
 
 int main() 
 {
-    sf::RenderWindow window(sf::VideoMode({ 1280, 720 }), "UJ TD 1");
+    sf::RenderWindow window(sf::VideoMode({ 1280, 720 }), "AGH Defenders");
     int money2 = 0;
     int moneyPerSec = 0;
     TVMENU(window);
@@ -34,6 +34,9 @@ int main()
         sf::sleep(sf::milliseconds(150));
         window.requestFocus();
 
+        
+
+
         // RESET ZMIENNYCH 
         sf::Clock clock;
         window.setFramerateLimit(60);
@@ -42,7 +45,7 @@ int main()
         std::vector<std::unique_ptr<Enemy>> enemies;
         int money2 = result.money2;
         int moneyPerSec = result.moneyPerSec;
-        int money = 0;
+        int money = 200;
         int moneyAdd = 5;
         if (money2 != 0) {
              money = money2;
@@ -54,8 +57,38 @@ int main()
 
         float moneyTimer = 0.0f;
 
+        bool bombaActive = false;
+        sf::Clock bombaClock;
+        sf::RectangleShape bombaFlash;
+
+        //SKRZYNIA Z KASA
+        sf::Texture chestTexture("skrzynia.png"); 
+        sf::Sprite chestSprite(chestTexture);
+
+        bool chestActive = false;
+        bool chestFalling = false;
+
+        sf::Clock chestSpawnClock;
+        sf::Clock chestLifeClock;
+
+        float chestSpawnDelay = randFloat(12.f, 25.f);
+        float chestLifetime = 0.f;
+
+        float chestFallSpeed = 300.f; 
+ 
+        const float playAreaLeft = 200.f;
+        const float playAreaRight = 1220.f;
+        const float playAreaMinGroundY = 100.f; 
+        const float playAreaMaxGroundY = 560.f; 
+        float chestTargetY = 0.f;
+
+
+        int chestReward = 100;
+
+
         const float gameOverLineX = 190.f;
         bool gameOver = false;
+        bool goToMenu = false;
 
         int currentWave = 1;
 
@@ -70,15 +103,28 @@ int main()
 
         float wave4Duration = 45.0f;
         float lastEnemySpawnTime4 = -2.0f;
+        float lastEnemySpawnTime4Boss = -10.0f;
+
 
         float wave5Duration = 45.0f;
         float lastEnemySpawnTime5 = -2.0f;
+        float lastEnemySpawnTime5Boss = -100.f;
 
         float wave6Duration = 45.0f;
         float lastEnemySpawnTime6 = -2.0f;
+        float lastEnemySpawnTime6Boss = -100.f;
+
 
         float wave7Duration = 30.0f;
         float lastEnemySpawnTime7 = -1.0f;
+        float lastEnemySpawnTime7Boss = -100.f;
+
+        bool wave7Spawning = true;
+
+        bool gameWon = false;
+       
+
+
 
         sf::Clock waveClock;
 
@@ -86,15 +132,12 @@ int main()
         sf::Font mediumGothic("ScienceGothic-Medium.ttf");
         //NAPIS FALI
         sf::Text waveText(mediumGothic);
-        waveText.setCharacterSize(48);
-        waveText.setFillColor(sf::Color::Red);
+        waveText.setCharacterSize(38);
+        waveText.setFillColor(sf::Color(53, 57, 40));
         waveText.setOutlineThickness(2);
-        waveText.setOutlineColor(sf::Color::Blue);
+        waveText.setOutlineColor(sf::Color::Black);
         waveText.setString("FALA 1");
-        waveText.setPosition(sf::Vector2f(
-            window.getSize().x * 0.5f - 80.f,
-            window.getSize().y - 70.f 
-        ));
+        waveText.setPosition(sf::Vector2f(1100,670));
 
         
 
@@ -103,6 +146,9 @@ int main()
         Button jaguar2Button(12, 243, 100, 125, 30);
         Button jaguar3Button(12, 371, 100, 125, 60);
         Button jaguar4Button(12, 504, 100, 125, 120);
+        Button menuButton(68, 673, 46, 40, 0);
+        Button ustawieniaButton(13,673,46,40,0);
+        Button bombaButton(9, 630, 106, 42, 350);
 
         sf::Text text(mediumGothic);
         text.setCharacterSize(18);
@@ -110,65 +156,99 @@ int main()
 
         sf::Text kasa = text;
         kasa.setFillColor(sf::Color::Yellow);
-        kasa.setOutlineThickness(1);
+        kasa.setOutlineThickness(1.8f);
         kasa.setOutlineColor(sf::Color::Black);
         kasa.setPosition({ 20, 38 });
 
         sf::Text zarobki = text;
         zarobki.setString(std::to_string(moneyAdd) + " $/s");
-        zarobki.setPosition({ 20, 85 });
-        zarobki.setFillColor(sf::Color::Green);
-        zarobki.setOutlineThickness(1);
+        zarobki.setPosition({ 20, 86 });
+        zarobki.setFillColor(sf::Color(134, 172, 19));
+        zarobki.setOutlineThickness(1.8f);
         zarobki.setOutlineColor(sf::Color::Black);
 
         sf::Text jaguar1Cost = text;
-        jaguar1Cost.setCharacterSize(12);
-        jaguar1Cost.setFillColor(sf::Color::Yellow);
-        jaguar1Cost.setOutlineThickness(0.8f);
+        jaguar1Cost.setCharacterSize(20);
+        jaguar1Cost.setFillColor(sf::Color(134, 172, 19));
+        jaguar1Cost.setOutlineThickness(1.8f);
 
         sf::Text jaguar2Cost = jaguar1Cost;
         sf::Text jaguar3Cost = jaguar1Cost;
-        sf::Text jaguar4Cost = jaguar1Cost;
+        sf::Text jaguar4Cost = text;
+        sf::Text bombaCost = text;
+        sf::Text winText = text;
+        jaguar4Cost.setCharacterSize(18);
+        jaguar4Cost.setFillColor(sf::Color(134, 172, 19));
+        jaguar4Cost.setOutlineThickness(1.8f);
 
         jaguar1Cost.setString("15");
-        jaguar1Cost.setPosition({ 15, 150 });
+        jaguar1Cost.setPosition({ 70, 212 });
         jaguar2Cost.setString("30");
-        jaguar2Cost.setPosition({ 15, 280 });
+        jaguar2Cost.setPosition({ 70, 340 });
         jaguar3Cost.setString("60");
-        jaguar3Cost.setPosition({ 15, 410 });
+        jaguar3Cost.setPosition({ 70, 468 });
         jaguar4Cost.setString("120");
-        jaguar4Cost.setPosition({ 15, 540 });
+        jaguar4Cost.setPosition({ 68, 603 });
+
+        bombaCost.setOutlineThickness(1.8f);
+        bombaCost.setCharacterSize(14);
+        bombaCost.setFillColor(sf::Color(134, 172, 19));
+        bombaCost.setString("350");
+        bombaCost.setPosition({ 75, 643 });
+
+        
+        winText.setString("You win!");
+        winText.setCharacterSize(120);
+        winText.setFillColor(sf::Color::White);
+        winText.setStyle(sf::Text::Bold);
+        winText.setPosition({ 1280 / 2.f - 300.f, 720 / 2.f - 80.f });
+
+        
+        //BOMBA
+        bombaFlash.setSize(sf::Vector2f(1280, 720));
+        bombaFlash.setFillColor(sf::Color(255, 255, 255, 255));
+        
 
         //TEKSTURY
-        sf::Texture jaguar1("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
-        sf::Texture jaguar2("wrog2.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
-        sf::Texture jaguar3("wrog3.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
-        sf::Texture ludzik("jaguar1.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
-        sf::Texture ludzik2("wrog2.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
-        sf::Texture ludzik3("wrog3.png", false, sf::IntRect({ 0, 0 }, { 32, 64 }));
+        sf::Texture jaguar1("jaguar1.png");
+        sf::Texture jaguar2("jaguar2.png");
+        sf::Texture jaguar3("jaguar3.png");
+        sf::Texture jaguar4("jaguar4.png");
+        sf::Texture ludzik("wrog1.png");
+        sf::Texture ludzik2("wrog2.png");
+        sf::Texture ludzik3("wrog3.png");
+        sf::Texture ludzik4("wrog4.png");
+        sf::Texture backgroundTexture1;
+        backgroundTexture1.loadFromFile("background.png");
+        sf::Texture backgroundTexture2;
+        backgroundTexture2.loadFromFile("background1.png");
+        sf::Texture backgroundTexture3;
+        backgroundTexture3.loadFromFile("background2.png");
+
+        sf::Sprite backgroundSprite1(backgroundTexture1);
+        backgroundSprite1.setScale({ 1280.f / backgroundTexture1.getSize().x,720.f / backgroundTexture1.getSize().y });
+        sf::Sprite backgroundSprite2(backgroundTexture2);
+        backgroundSprite2.setScale({ 1280.f / backgroundTexture2.getSize().x,720.f / backgroundTexture2.getSize().y });
+        sf::Sprite backgroundSprite3(backgroundTexture3);
+        backgroundSprite3.setScale({ 1280.f / backgroundTexture3.getSize().x,720.f / backgroundTexture3.getSize().y });
+
         sf::Texture bullet("bullet.png", false, sf::IntRect({ 0, 0 }, { 26, 8 }));
         sf::Texture sidePanel("sidePanel.png");
 
         sf::Sprite sidePanelSprite(sidePanel);
 
         //NA POCZATKU SHOOTERZY
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 0; i++)
         {
             shooters.push_back(std::make_unique<Shooter>(
-                jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f)));
+                jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f), 0));
         }
 
-        sf::RectangleShape rectangle({ 5, 720 });
-        rectangle.setFillColor(sf::Color::Black);
-        rectangle.setPosition({ 190, 0 });
-
-        sf::RectangleShape rect2({ 2, 720 });
-        rect2.setFillColor(sf::Color::Black);
-        rect2.setPosition({ 126, 0 });
+       
 
         waveClock.restart();
 
-        while (window.isOpen() && !gameOver)
+        while (window.isOpen() && !gameOver && !goToMenu)
         {
             // ZAKUP
             while (const std::optional event = window.pollEvent())
@@ -182,6 +262,22 @@ int main()
                     jaguar2Button.onMousePressed();
                     jaguar3Button.onMousePressed();
                     jaguar4Button.onMousePressed();
+
+                    if (chestActive && !chestFalling &&
+                        mousePressed->button == sf::Mouse::Button::Left)
+                    {
+                        sf::Vector2f mousePos =
+                            window.mapPixelToCoords({ mousePressed->position.x, mousePressed->position.y });
+
+                        if (chestSprite.getGlobalBounds().contains(mousePos))
+                        {
+                            money += chestReward;
+
+                            chestActive = false;
+                            chestSpawnClock.restart();
+                        }
+                    }
+
                 }
 
                 if (const auto* mouseReleased = event->getIf<sf::Event::MouseButtonReleased>())
@@ -190,20 +286,39 @@ int main()
                     jaguar2Button.onMouseReleased();
                     jaguar3Button.onMouseReleased();
                     jaguar4Button.onMouseReleased();
+                    menuButton.onMouseReleased();
+                    ustawieniaButton.onMouseReleased();
+                    bombaButton.onMouseReleased();
 
                     if (jaguar1Button.onClicked(money))
                         shooters.push_back(std::make_unique<Shooter>(
-                            jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f)));
+                            jaguar1, randFloat(130.f, 170.f), randFloat(0.f, 656.0f), 0));
 
                     if (jaguar2Button.onClicked(money))
                         shooters.push_back(std::make_unique<Shooter>(
-                            jaguar2, randFloat(130.f, 170.f), randFloat(0.f, 656.0f)));
+                            jaguar2, randFloat(130.f, 170.f), randFloat(0.f, 656.0f), 1));
 
                     if (jaguar3Button.onClicked(money))
                         shooters.push_back(std::make_unique<Shooter>(
-                            jaguar3, randFloat(130.f, 170.f), randFloat(0.f, 656.0f)));
+                            jaguar3, randFloat(130.f, 170.f), randFloat(0.f, 656.0f), 2));
 
-                    jaguar4Button.onClicked(money);
+                    if (jaguar4Button.onClicked(money))
+                        shooters.push_back(std::make_unique<Shooter>(
+                            jaguar4, randFloat(130.f, 170.f), randFloat(0.f, 656.0f), 3));
+                    if (menuButton.onClicked(money))
+                    {
+                        goToMenu = true;
+                    }
+
+                    if (bombaButton.onClicked(money) && !bombaActive)
+                    {
+                        bombaActive = true;
+                        bombaClock.restart();
+                        enemies.clear();
+                    }
+
+                    
+                    
 
                     kasa.setString(std::to_string(money));
                 }
@@ -214,6 +329,60 @@ int main()
             // DELTA TIME
             float dt = clock.restart().asSeconds();
             float waveTime = waveClock.getElapsedTime().asSeconds();
+
+            //BOMBA
+            if (bombaActive)
+            {
+                if (bombaClock.getElapsedTime().asSeconds() >= 1.0f)
+                {
+                    bombaActive = false;
+                }
+            }
+
+            //SPAWN SKRZYNKI
+            if (!chestActive && chestSpawnClock.getElapsedTime().asSeconds() >= chestSpawnDelay)
+            {
+                chestActive = true;
+                chestFalling = true;
+
+                chestSprite.setPosition({
+                 randFloat(playAreaLeft, playAreaRight - 27.f), 
+                   -30.f
+                    });
+
+
+                chestSpawnDelay = randFloat(12.f, 25.f);
+                chestTargetY = randFloat(playAreaMinGroundY, playAreaMaxGroundY);
+
+            }
+            
+        // ---------- SPADANIE ----------
+            if (chestActive && chestFalling)
+            {
+                chestSprite.move({ 0.f, chestFallSpeed * dt });
+
+                if (chestSprite.getPosition().y >= chestTargetY)
+                {
+                    chestSprite.setPosition({
+                        chestSprite.getPosition().x,
+                        chestTargetY
+                        });
+
+
+                    chestFalling = false;
+                    chestLifetime = randFloat(5.f, 10.f);
+                    chestLifeClock.restart();
+                }
+            }
+
+        // ---------- CZAS NA KLIK ----------
+        if (chestActive && !chestFalling &&
+            chestLifeClock.getElapsedTime().asSeconds() >= chestLifetime)
+        {
+            chestActive = false;
+            chestSpawnClock.restart();
+        }
+
 
             // MONEY CASH
             moneyTimer += dt;
@@ -311,8 +480,8 @@ int main()
             // FALA 3
             else if (currentWave == 3)
             {
-                if (shooters.empty())
-                    continue;
+                if (!shooters.empty())
+                {
 
                 if (waveTime < wave3Duration)
                 {
@@ -368,13 +537,13 @@ int main()
 
                     }
 
-                    // 6 wrogów co 1 sekundę
+                    // 4 wrogów co 1 sekundę
                     else if (sixSpawnWindow && waveTime - lastEnemySpawnTime3 >= 1.0f)
                     {
                         lastEnemySpawnTime3 = waveTime;
 
-                        // 4x ludzik2
-                        for (int i = 0; i < 4; i++)
+                        // 3x ludzik2
+                        for (int i = 0; i < 3; i++)
                         {
                             int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
                             enemies.push_back(std::make_unique<Enemy>(
@@ -382,8 +551,8 @@ int main()
                             shooters[randomT]->addEnemy(enemies.back().get());
                         }
 
-                        // 2x ludzik3
-                        for (int i = 0; i < 2; i++)
+                        // 1x ludzik3
+                        for (int i = 0; i < 1; i++)
                         {
                             int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
                             enemies.push_back(std::make_unique<Enemy>(
@@ -393,12 +562,12 @@ int main()
 
                     }
 
-                    // 8 wrogów co 1 sekundę
+                    // 6 wrogów co 1 sekundę
                     else if (eightSpawnWindow && waveTime - lastEnemySpawnTime3 >= 1.0f)
                     {
                         lastEnemySpawnTime3 = waveTime;
 
-                        // 5x ludzik3
+                        // 3x ludzik3
                         for (int i = 0; i < 5; i++)
                         {
                             int randomT = randInt(0, static_cast<int>(shooters.size() - 1));
@@ -437,15 +606,29 @@ int main()
                     waveClock.restart();
                     waveText.setString("FALA 4");
                     lastEnemySpawnTime4 = -2.0f;
+                    lastEnemySpawnTime4Boss = -10.0f;
                     continue;
                 }
+                } // End if !shooters.empty()
             }
 
             //FALA 4
             else if (currentWave == 4)
             {
-                if (shooters.empty())
-                    continue;
+                if (!shooters.empty())
+                {
+                    if (waveTime - lastEnemySpawnTime4Boss >= 10.0f)
+                    {
+                        lastEnemySpawnTime4Boss = waveTime;
+
+                        int r = randInt(0, shooters.size() - 1);
+                        enemies.push_back(std::make_unique<Enemy>(
+                            ludzik4,
+                            randFloat(0.f, 656.f),
+                            shooters[r].get(),
+                            3));
+                        shooters[r]->addEnemy(enemies.back().get());
+                    }
 
                 if (waveTime < 45.0f)
                 {
@@ -516,23 +699,47 @@ int main()
                                 ludzik2, randFloat(0, 656), shooters[r].get(), 1));
                             shooters[r]->addEnemy(enemies.back().get());
                         }
+                        
                     }
-                    if (waveTime >= wave3Duration)
-                    {
-                        currentWave = 5;
-                        waveClock.restart();
-                        waveText.setString("FALA 5");
-                        lastEnemySpawnTime5 = -2.0f;
-                        continue;
-                    }
+                    
+                    
+                    
                 }
+                if (waveTime >= wave4Duration)
+                {
+                    currentWave = 5;
+                    waveClock.restart();
+                    waveText.setString("FALA 5");
+                    lastEnemySpawnTime5 = -2.0f;
+                    
+
+                    continue;
+                }
+                } // End if !shooters.empty()
             }
 
             //FALA 5
             else if (currentWave == 5)
             {
-                if (shooters.empty())
-                    continue;
+                if (!shooters.empty())
+                {
+                    // ===== 2x KOPARKA – FALA 5 (co 10s) =====
+                    if (waveTime < wave5Duration &&
+                        waveTime - lastEnemySpawnTime5Boss >= 10.f)
+                    {
+                        lastEnemySpawnTime5Boss = waveTime;
+
+                        for (int i = 0; i < 2; i++)
+                        {
+                            int r = randInt(0, static_cast<int>(shooters.size() - 1));
+                            enemies.push_back(std::make_unique<Enemy>(
+                                ludzik4,
+                                randFloat(0.f, 656.f),
+                                shooters[r].get(),
+                                3));
+                            shooters[r]->addEnemy(enemies.back().get());
+                        }
+                    }
 
                 if (waveTime < 45.0f &&
                     waveTime - lastEnemySpawnTime5 >= 3.0f)
@@ -570,29 +777,46 @@ int main()
                         ludzik, randFloat(0, 656), shooters[r].get(), 0));
                     shooters[r]->addEnemy(enemies.back().get());
                 }
-                if (waveTime >= wave3Duration)
+                if (waveTime >= wave5Duration)
                 {
                     currentWave = 6;
                     waveClock.restart();
                     waveText.setString("FALA 6");
                     lastEnemySpawnTime6 = -2.0f;
-                    continue;
+                    continue; 
                 }
+                } // End if !shooters.empty()
             }
 
             //FALA 6
             else if (currentWave == 6)
             {
-                if (shooters.empty())
-                    continue;
+                if (!shooters.empty())
+                {
+                    if (waveTime < wave6Duration &&
+                        waveTime - lastEnemySpawnTime6Boss >= 15.f)
+                    {
+                        lastEnemySpawnTime6Boss = waveTime;
+
+                        for (int i = 0; i < 3; i++)
+                        {
+                            int r = randInt(0, static_cast<int>(shooters.size() - 1));
+                            enemies.push_back(std::make_unique<Enemy>(
+                                ludzik4,
+                                randFloat(0.f, 656.f),
+                                shooters[r].get(),
+                                3));
+                            shooters[r]->addEnemy(enemies.back().get());
+                        }
+                    }
 
                 if (waveTime < 45.0f &&
                     waveTime - lastEnemySpawnTime6 >= 4.0f)
                 {
                     lastEnemySpawnTime6 = waveTime;
 
-                    // 6x ludzik3
-                    for (int i = 0; i < 6; i++)
+                    // 5x ludzik3
+                    for (int i = 0; i < 5; i++)
                     {
                         int r = randInt(0, shooters.size() - 1);
                         enemies.push_back(std::make_unique<Enemy>(
@@ -600,8 +824,8 @@ int main()
                         shooters[r]->addEnemy(enemies.back().get());
                     }
 
-                    // 2x ludzik2
-                    for (int i = 0; i < 2; i++)
+                    // 1x ludzik2
+                    for (int i = 0; i < 1; i++)
                     {
                         int r = randInt(0, shooters.size() - 1);
                         enemies.push_back(std::make_unique<Enemy>(
@@ -611,41 +835,62 @@ int main()
 
 
                 }
-                else
-                {
+                
+                if (waveTime >= wave6Duration) {
                     currentWave = 7;
                     waveClock.restart();
                     waveText.setString("FALA 7");
                     lastEnemySpawnTime7 = -1.0f;
                 }
+                } // End if !shooters.empty()
 
             }
 
             //FALA 7
             else if (currentWave == 7)
             {
-                if (shooters.empty())
-                    continue;
+                if (!shooters.empty())
+                {
 
 
                 if (waveTime >= wave7Duration)
-                    continue;
+                {
+                    wave7Spawning = false;
+                }
 
                 // ---- OKNA CZASOWE ----
 
-                // 0–10s → 4 wrogów co 1.5s (3x ludzik3 + 1x ludzik2)
+                // 0–10s → 2 wrogów co 1.5s (3x ludzik3 + 1x ludzik2) i co 5s ludzik4
                 bool earlyPressure = waveTime < 10.0f;
 
-                // 10–20s → 6 wrogów co 1s (4x ludzik3 + 2x ludzik2)
+                // 10–20s → 6 wrogów co 1s (4x ludzik3 + 2x ludzik2) i co 3 s ludzik4
                 bool midChaos = waveTime >= 10.0f && waveTime < 20.0f;
 
-                // 20–30s → 10 wrogów co 1s (7x ludzik3 + 3x ludzik2)
-                bool finalStorm = waveTime >= 20.0f;
+                // 20–30s → 10 wrogów co 1s (7x ludzik3 + 3x ludzik2) i co 2s ludzik4
+                bool finalStorm = waveTime >= 20.0f && waveTime < wave7Duration;
+
 
                 // ---- SPAWN ----
 
                 //EARLY
-                if (earlyPressure && waveTime - lastEnemySpawnTime7 >= 1.5f)
+                if  (wave7Spawning && waveTime < 10.f &&
+                    waveTime - lastEnemySpawnTime7Boss >= 5.f)
+                {
+                    lastEnemySpawnTime7Boss = waveTime;
+
+                    for (int i = 0; i < 2; i++)
+                    {
+                        int r = randInt(0, shooters.size() - 1);
+                        enemies.push_back(std::make_unique<Enemy>(
+                            ludzik4,
+                            randFloat(0.f, 656.f),
+                            shooters[r].get(),
+                            3));
+                        shooters[r]->addEnemy(enemies.back().get());
+                    }
+                }
+
+                 if (earlyPressure && waveTime - lastEnemySpawnTime7 >= 1.5f)
                 {
                     lastEnemySpawnTime7 = waveTime;
 
@@ -656,7 +901,9 @@ int main()
                             ludzik3, randFloat(0.f, 656.f), shooters[r].get(), 2));
                         shooters[r]->addEnemy(enemies.back().get());
                     }
-
+                
+                   
+                   
                     int r = randInt(0, shooters.size() - 1);
                     enemies.push_back(std::make_unique<Enemy>(
                         ludzik2, randFloat(0.f, 656.f), shooters[r].get(), 1));
@@ -664,7 +911,22 @@ int main()
                 }
 
                 // MID
-                else if (midChaos && waveTime - lastEnemySpawnTime7 >= 1.0f)
+                 if (wave7Spawning && waveTime >= 10.f && waveTime < 20.f &&
+                    waveTime - lastEnemySpawnTime7Boss >= 3.f)
+                {
+                    lastEnemySpawnTime7Boss = waveTime;
+
+                    
+                        int r = randInt(0, shooters.size() - 1);
+                        enemies.push_back(std::make_unique<Enemy>(
+                            ludzik4,
+                            randFloat(0.f, 656.f),
+                            shooters[r].get(),
+                            3));
+                        shooters[r]->addEnemy(enemies.back().get());
+                    
+                }
+                 if (midChaos && waveTime - lastEnemySpawnTime7 >= 1.0f)
                 {
                     lastEnemySpawnTime7 = waveTime;
 
@@ -686,11 +948,25 @@ int main()
                 }
 
                 //FINAL
-                else if (finalStorm && waveTime - lastEnemySpawnTime7 >= 1.0f)
+                 if (wave7Spawning && waveTime >= 20.f &&
+                    waveTime - lastEnemySpawnTime7Boss >= 2.f)
+                {
+                    lastEnemySpawnTime7Boss = waveTime;
+
+                    int r = randInt(0, shooters.size() - 1);
+                    enemies.push_back(std::make_unique<Enemy>(
+                        ludzik4,
+                        randFloat(0.f, 656.f),
+                        shooters[r].get(),
+                        3));
+                    shooters[r]->addEnemy(enemies.back().get());
+                }
+
+                 if (finalStorm && waveTime - lastEnemySpawnTime7 >= 1.0f)
                 {
                     lastEnemySpawnTime7 = waveTime;
 
-                    for (int i = 0; i < 7; i++)
+                    for (int i = 0; i < 4; i++)
                     {
                         int r = randInt(0, shooters.size() - 1);
                         enemies.push_back(std::make_unique<Enemy>(
@@ -706,6 +982,11 @@ int main()
                         shooters[r]->addEnemy(enemies.back().get());
                     }
                 }
+                if (!wave7Spawning && enemies.empty())
+                {
+                    gameWon = true;
+                }
+                } // End !shooters.empty()
             }
 
 
@@ -752,6 +1033,12 @@ int main()
                 }
 
                 enemy->update(dt);
+                
+                if (enemy->isReadyToShoot())
+                {
+                    enemy->shoot(bullet);
+                    enemy->resetReadyToShoot();
+                }
 
                 if (enemy->getPosition().x < gameOverLineX)
                 {
@@ -760,28 +1047,44 @@ int main()
                 }
             }
 
+            for (auto& shooter : shooters)
+                shooter->cleanupEnemies();
+
             enemies.erase(
                 std::remove_if(enemies.begin(), enemies.end(),
                     [](const auto& e) { return !e->isAlive(); }),
                 enemies.end());
-            for (auto& shooter : shooters)
-                shooter->cleanupEnemies();
 
 
             //RYSOWANIE
 
-
-            window.clear(sf::Color::White);
-
             mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-
+            
+            switch(lvl)
+            {
+                case 1:
+                    window.draw(backgroundSprite1);
+                    break;
+                case 2:
+                    window.draw(backgroundSprite2);
+                    break;
+                case 3:
+                    window.draw(backgroundSprite3);
+                    break;
+                default:
+                    window.draw(backgroundSprite1);
+                    break;
+			}
+            
             jaguar1Button.update(mousePos, money);
             jaguar2Button.update(mousePos, money);
             jaguar3Button.update(mousePos, money);
             jaguar4Button.update(mousePos, money);
+            menuButton.update(mousePos, money);
+            ustawieniaButton.update(mousePos, money);
+            bombaButton.update(mousePos, money);
 
-            window.draw(rectangle);
-            window.draw(rect2);
+           
 
             window.draw(sidePanelSprite);
             window.draw(kasa);
@@ -790,11 +1093,17 @@ int main()
             window.draw(jaguar2Cost);
             window.draw(jaguar3Cost);
             window.draw(jaguar4Cost);
+            window.draw(bombaCost);
+
 
             jaguar1Button.draw(window);
             jaguar2Button.draw(window);
             jaguar3Button.draw(window);
             jaguar4Button.draw(window);
+            menuButton.draw(window);
+            ustawieniaButton.draw(window);
+            bombaButton.draw(window);
+           
 
             for (const auto& shooter : shooters)
             {
@@ -803,9 +1112,24 @@ int main()
             }
 
             for (const auto& enemy : enemies)
+            {
                 enemy->draw(window);
+                enemy->drawBullets(window);
+            }
             //nazwa fali
             window.draw(waveText);
+
+            if (chestActive)
+                window.draw(chestSprite);
+
+             if (bombaActive)
+            {
+                window.draw(bombaFlash);
+            }
+             if (gameWon)
+             {
+                 window.draw(winText);
+             }
 
             window.display();
         }

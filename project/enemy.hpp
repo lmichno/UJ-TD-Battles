@@ -1,6 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <vector>
+#include <memory>
+#include "bullet.hpp"
 
 extern float globalDificulty;
 void HordMode(int dif);
@@ -27,17 +30,28 @@ private:
     Shooter* target = nullptr;
 	sf::Vector2f targetPos;
 
+    // Bullets
+    std::vector<std::unique_ptr<Bullet>> bullets;
+    float shootCooldown;
+    float shootCooldownTimer;
+    bool readyToShoot = false;
 
 public:
     // Konstruktor
     Enemy(const sf::Texture& texture, float randY, Shooter* shooter, int type);
+    ~Enemy();
+
+    bool isReadyToShoot() const { return readyToShoot; }
+    void resetReadyToShoot() { readyToShoot = false; }
 
     // Funkcje
-    //asdsad
-    // Renderowanie
     void update(float dt);
-
     void draw(sf::RenderWindow& window);
+
+    // Shooting
+    void shoot(const sf::Texture& bulletTexture);
+    void updateBullets(float dt);
+    void drawBullets(sf::RenderWindow& window);
 
     // Settery
     void setTarget(Shooter* newTarget);

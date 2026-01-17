@@ -215,7 +215,11 @@ GeneratorResult showGeneratorMenu(sf::RenderWindow& window)
 
 MenuResult showMenu(sf::RenderWindow& window)
 {
-    sf::Font font("LuckiestGuy-Regular.ttf");
+    sf::Font font("RussoOne-Regular.ttf");
+    sf::Texture backgroundMenuTexture;
+    backgroundMenuTexture.loadFromFile("backgroundMenu.png");
+    sf::Sprite backgroundMenuSprite(backgroundMenuTexture);
+    backgroundMenuSprite.setScale({ 1280.f / backgroundMenuTexture.getSize().x,720.f / backgroundMenuTexture.getSize().y });
 
     int lvl = 0;
     int difficulty = 0;
@@ -223,8 +227,8 @@ MenuResult showMenu(sf::RenderWindow& window)
     while (window.isOpen())
     {
         sf::Vector2u win = window.getSize();
-        float w = static_cast<float>(win.x);
-        float h = static_cast<float>(win.y);
+        float w = 1280;
+        float h = 720;
 
         // Skalowanie i centrowanie kafelków w rzędzie
         float maxRowWidth = w * 0.9f;
@@ -245,24 +249,10 @@ MenuResult showMenu(sf::RenderWindow& window)
         sf::Vector2f mouse = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
         // Górny tytuł
-        sf::Text title(font);
-        title.setString("WYBIERZ POZIOM I TRUDNOSC:");
-        title.setCharacterSize(static_cast<unsigned>(h * 0.06f));
-        title.setFillColor(sf::Color::White);
-        {
-            sf::FloatRect bounds = title.getLocalBounds();
-            title.setPosition(sf::Vector2f(w * 0.5f - bounds.size.x * 0.5f,h * 0.08f));
-        }
+        
+        
 
-        // Tytuł 
-        sf::Text difTitle(font);
-        difTitle.setString("WYBIERZ POZIOM TRUDNOSCI:");
-        difTitle.setCharacterSize(static_cast<unsigned>(h * 0.045f));
-        difTitle.setFillColor(sf::Color::White);
-        {
-            sf::FloatRect bounds = difTitle.getLocalBounds();
-            difTitle.setPosition(sf::Vector2f( w * 0.5f - bounds.size.x * 0.5f,lvlY + tileH + 10.0f));
-        }
+     
 
         std::vector<sf::RectangleShape> lvlButtons;
         std::vector<sf::Text>           lvlTexts;
@@ -277,11 +267,11 @@ MenuResult showMenu(sf::RenderWindow& window)
             sf::RectangleShape rect(sf::Vector2f(tileW, tileH));
             rect.setPosition(sf::Vector2f(x, lvlY));
 
-            sf::Color col(150, 150, 150);
+            sf::Color col(138, 185, 130);
             if (lvl == i + 1)
-                col = sf::Color::Green;
+                col = sf::Color(148, 33, 42);
             if (rect.getGlobalBounds().contains(mouse))
-                col = sf::Color(0, 120, 0);
+                col = sf::Color(79, 125, 70);
             rect.setFillColor(col);
 
             lvlButtons.push_back(rect);
@@ -302,11 +292,11 @@ MenuResult showMenu(sf::RenderWindow& window)
             sf::RectangleShape rect(sf::Vector2f(tileW, tileH));
             rect.setPosition(sf::Vector2f(x, difY));
 
-            sf::Color col(150, 150, 150);
+            sf::Color col(138, 185, 130);
             if (difficulty == i + 1)
-                col = sf::Color::Green;
+                col = sf::Color(148, 33, 42);
             if (rect.getGlobalBounds().contains(mouse))
-                col = sf::Color(0, 120, 0);
+                col = sf::Color(79, 125, 70);
              rect.setFillColor(col);
 
             diffButtons.push_back(rect);
@@ -444,10 +434,9 @@ MenuResult showMenu(sf::RenderWindow& window)
             }
         }
 
-        window.clear(sf::Color::Black);
-        window.draw(title);
-        window.draw(difTitle);
-
+        window.clear();
+        window.draw(backgroundMenuSprite);
+    
         for (int i = 0; i < 3; ++i)
         {
             window.draw(lvlButtons[i]);
