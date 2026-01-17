@@ -11,6 +11,7 @@
 #include "bullet.hpp"
 #include "menu.hpp"
 
+
 std::mt19937 rng(std::random_device{}());
 
 float randFloat(float a, float b);
@@ -308,6 +309,10 @@ int main()
                     if (menuButton.onClicked(money))
                     {
                         goToMenu = true;
+                    }
+                    if (ustawieniaButton.onClicked(money))
+                    {
+                        musicS(window);
                     }
 
                     if (bombaButton.onClicked(money) && !bombaActive)
